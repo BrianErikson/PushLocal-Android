@@ -4,14 +4,37 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
+
+import java.io.IOException;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
+    private Server server;
+
+    public NetworkDisoveryActivity() {
+        this.server = new Server(MainActivity.getContext());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network_disovery);
+        Button button = (Button) findViewById(R.id.discovery_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    server.broadcast();
+                    System.out.println("broadcasted Yo son");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 

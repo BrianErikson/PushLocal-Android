@@ -1,5 +1,6 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,15 +13,21 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
-    public static String[] listValues = new String[] { "Android", "iPhone", "WindowsMobile",
+    private static Context mContext;
+    public static String[] listValues = new String[] { "Network Discovery", "iPhone", "WindowsMobile",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
             "Android", "iPhone", "WindowsMobile" };
 
+    public static Context getContext() {
+        return mContext;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
         ListView list = (ListView) findViewById(R.id.listView);
 

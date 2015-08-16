@@ -1,28 +1,26 @@
-package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
+package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.NetworkDisoveryActivity;
 
 /**
- * Created by nphel on 8/15/2015.
+ * Created by nphel on 8/16/2015.
  */
-public class MainItemListener implements OnItemClickListener {
+public class ListItemListener implements AdapterView.OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TextView textView = (TextView) view.findViewById(R.id.list_item_text);
 
         String stringText = textView.getText().toString();
         Toast.makeText(view.getContext(), stringText, Toast.LENGTH_LONG);
-        if(stringText.contains("Network Discovery")){
+        if(stringText.contains("")){
             Intent intent = new Intent(view.getContext(), NetworkDisoveryActivity.class);
             view.getContext().startActivity(intent);
         }
     }
 }
+

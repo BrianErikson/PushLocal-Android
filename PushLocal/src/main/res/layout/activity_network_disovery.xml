@@ -13,11 +13,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Search for Devices"
-            android:id="@+id/button" android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
+            android:id="@+id/discovery_button" android:layout_alignParentTop="true" android:layout_centerHorizontal="true"
             android:background="#ff002f36" android:textColor="#ffd3ecf0"/>
     <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listView2" android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true" android:layout_below="@+id/button" android:background="#1cc4e7"/>
+            android:layout_alignParentBottom="true" android:layout_below="@+id/discovery_button" android:background="#1cc4e7"/>
 </RelativeLayout>
