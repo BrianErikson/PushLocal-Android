@@ -1,33 +1,90 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
+import android.util.Pair;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.ServerSocket;
+import java.util.ArrayList;
 
 /**
  * Created by nphel on 8/16/2015.
  */
 public class Server {
+    public static String UNIT = Character.toString((char)  31);
+    public static String RECORD = Character.toString((char)30);
+    public static String GROUP = Character.toString((char) 29);
+    public static String FILE = Character.toString((char)  28);
+
+    private static Server singleton;
+    private static volatile boolean isRunning = false;
     private Context context;
+
     private DatagramSocket udpSocket;
+    private Thread udpThread;
+    private UdpListener udpListener;
+
+    private ServerSocket serverSock;
+    private ArrayList<DeviceListener> deviceListeners;
+
+    private ArrayList<Pair<String, InetAddress>> discoveredDevices;
+
     public Server(Context context) {
+        if (singleton != null)
+            throw new IllegalStateException("Server already instantiated");
+
+        singleton = this;
+        discoveredDevices = new ArrayList<>();
+        deviceListeners = new ArrayList<>();
+
+        isRunning = true;
         this.context = context;
         try {
             udpSocket = new DatagramSocket(7766);
             udpSocket.setBroadcast(true);
-        } catch (SocketException e) {
+            serverSock = new ServerSocket(7777);
+
+            udpListener = new UdpListener(udpSocket);
+            udpThread = new Thread(udpListener);
+            udpThread.start();
+        } catch (IOException e) {
             e.printStackTrace();
+            isRunning = false;
         }
+    }
+
+    public static Server fetch() {
+        return singleton;
+    }
+
+    public static boolean isRunning() {
+        return isRunning;
+    }
+
+    public synchronized void addDiscoveredDevice(Pair<String, InetAddress> device) {
+        System.out.println("Adding discovered device " + device.first);
+        discoveredDevices.add(device);
+        for (DeviceListener listener : deviceListeners) {
+            listener.onDeviceDiscovery(device);
+        }
+    }
+
+    public void addDeviceListener(DeviceListener listener) {
+        deviceListeners.add(listener);
+    }
+
+    public void removeDeviceListener(DeviceListener listener) {
+        deviceListeners.remove(listener);
+    }
+
+    public ArrayList<Pair<String, InetAddress>> getDiscoveredDevices() {
+        return discoveredDevices;
     }
 
     InetAddress getBroadcastAddress() throws IOException {

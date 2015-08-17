@@ -18,6 +18,6 @@
     <ListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/listView2" android:layout_centerHorizontal="true"
+            android:id="@+id/discovered_devices_list" android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true" android:layout_below="@+id/discovery_button" android:background="#1cc4e7"/>
 </RelativeLayout>
