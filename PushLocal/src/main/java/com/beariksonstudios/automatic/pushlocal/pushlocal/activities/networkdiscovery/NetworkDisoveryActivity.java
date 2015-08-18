@@ -15,7 +15,6 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdisc
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
-import java.io.IOException;
 import java.net.InetAddress;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
@@ -61,12 +60,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    server.broadcast();
-                    System.out.println("broadcasted Yo son");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                server.broadcast();
             }
         });
     }

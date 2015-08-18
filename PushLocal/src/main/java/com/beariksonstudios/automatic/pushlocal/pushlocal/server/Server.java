@@ -106,13 +106,29 @@ public class Server {
         return InetAddress.getByAddress(quads);
     }
 
-    public void broadcast() throws IOException {
+    public void broadcast() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
                     byte[] data = "broadcast".getBytes();
                     DatagramPacket packet = new DatagramPacket(data, data.length, getBroadcastAddress(), 7766);
+                    udpSocket.send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    public void connectNotify(final InetAddress address) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    byte[] data = "connect".getBytes();
+                    DatagramPacket packet = new DatagramPacket(data, data.length, address, 7766);
                     udpSocket.send(packet);
                 } catch (IOException e) {
                     e.printStackTrace();

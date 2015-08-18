@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.*;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.net.InetAddress;
 
@@ -43,6 +44,7 @@ public class SyncDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "Sending connect packet to " +  selectedDevice.first, Toast.LENGTH_LONG).show();
+                Server.fetch().connectNotify(selectedDevice.second);
             }
         });
 
