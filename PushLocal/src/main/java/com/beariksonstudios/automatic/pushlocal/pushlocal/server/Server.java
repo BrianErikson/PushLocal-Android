@@ -5,6 +5,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Pair;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp.TcpHandler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -30,6 +31,9 @@ public class Server {
     private Thread udpThread;
     private UdpListener udpListener;
 
+    private Thread tcpThread;
+    private TcpHandler tcpHandler;
+
     private ServerSocket serverSock;
     private ArrayList<DeviceListener> deviceListeners;
 
@@ -53,6 +57,10 @@ public class Server {
             udpListener = new UdpListener(udpSocket);
             udpThread = new Thread(udpListener);
             udpThread.start();
+
+            tcpHandler = new TcpHandler(serverSock);
+            tcpThread = new Thread(tcpHandler);
+            tcpThread.start();
         } catch (IOException e) {
             e.printStackTrace();
             isRunning = false;
