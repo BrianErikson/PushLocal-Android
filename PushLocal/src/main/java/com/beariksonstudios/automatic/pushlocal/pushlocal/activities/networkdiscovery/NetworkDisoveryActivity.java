@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog.SyncDialog;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
@@ -31,6 +31,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network_disovery);
 
+        final NetworkDisoveryActivity _this = this;
         ListView list = (ListView) findViewById(R.id.discovered_devices_list);
         final DiscoveredListAdapter dListAdapter = new DiscoveredListAdapter(this, R.id.discovered_devices_list,
                 server.getDiscoveredDevices());
@@ -38,11 +39,11 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(view.getContext(), "Sending connect packet (not really)", Toast.LENGTH_LONG).show();
+                SyncDialog syncDialog = new SyncDialog(_this, server.getDiscoveredDevices().get(position));
+                syncDialog.show();
             }
         });
 
-        final NetworkDisoveryActivity _this = this;
         deviceListener = new DeviceListener() {
             @Override
             public void onDeviceDiscovery(Pair<String, InetAddress> device) {

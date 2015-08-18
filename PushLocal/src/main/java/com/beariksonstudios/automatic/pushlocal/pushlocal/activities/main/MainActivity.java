@@ -5,7 +5,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 
@@ -35,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         for (int i = 0; i < listValues.length; ++i) {
             strings.add(listValues[i]);
         }
-        MainListAdapter listAdapter = new MainListAdapter(this, R.layout.main_list_item, strings);
+        MainListAdapter listAdapter = new MainListAdapter(this, R.layout.item_main_list, strings);
         list.setAdapter(listAdapter);
         list.setOnItemClickListener(new MainItemListener());
     }
