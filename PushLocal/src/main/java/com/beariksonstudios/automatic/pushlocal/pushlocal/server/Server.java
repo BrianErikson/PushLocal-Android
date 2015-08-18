@@ -68,10 +68,17 @@ public class Server {
     }
 
     public synchronized void addDiscoveredDevice(Pair<String, InetAddress> device) {
-        System.out.println("Adding discovered device " + device.first);
-        discoveredDevices.add(device);
-        for (DeviceListener listener : deviceListeners) {
-            listener.onDeviceDiscovery(device);
+        boolean newDevice = true;
+        for (Pair<String, InetAddress> discoveredDevice : discoveredDevices) {
+            if (discoveredDevice.first.contains(device.first))
+                newDevice = false;
+        }
+
+        if (newDevice) {
+            discoveredDevices.add(device);
+            for (DeviceListener listener : deviceListeners) {
+                listener.onDeviceDiscovery(device);
+            }
         }
     }
 
@@ -108,7 +115,7 @@ public class Server {
                     DatagramPacket packet = new DatagramPacket(data, data.length, getBroadcastAddress(), 7766);
                     udpSocket.send(packet);
                 } catch (IOException e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
                 return null;
             }
