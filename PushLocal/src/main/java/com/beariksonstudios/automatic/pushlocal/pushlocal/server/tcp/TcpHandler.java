@@ -14,11 +14,9 @@ import java.util.ArrayList;
 public class TcpHandler implements Runnable {
     private ServerSocket serverSock;
     private ArrayList<TcpClient> clients;
-    private ArrayList<Message> messages;
 
     public TcpHandler(ServerSocket serverSock) {
         this.serverSock = serverSock;
-        this.messages = new ArrayList<>();
         this.clients = new ArrayList<>();
     }
 
@@ -48,18 +46,8 @@ public class TcpHandler implements Runnable {
             Log.v("PushLocal", "Adding client  " + connection.getInetAddress().getHostName());
             TcpClient tcpClient = new TcpClient(connection, this);
             tcpClient.start();
-            try {
-                tcpClient.sendMessage("we are connected");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             clients.add(tcpClient);
         }
-    }
-
-    // client threads
-    public synchronized void addMessage(Message message) {
-        messages.add(message);
     }
 
     // Server/Main thread

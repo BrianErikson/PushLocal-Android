@@ -1,5 +1,6 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp;
 
+import android.util.Log;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.io.IOException;
@@ -30,13 +31,20 @@ public class TcpClient extends Thread {
                     String str = new String(data);
                     data = new byte[PACKET_SIZE];
 
-                    tcpHandler.addMessage(new Message(socket.getInetAddress(), str));
+                    Log.d("PushLocal", "Recieved Message from " + socket.getInetAddress().getHostName() + ": " + str);
+                    handleMessage(str);
                     Thread.sleep(0);
                 }
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                Log.e("PushLocal", " " + socket.getInetAddress().toString() + e.getMessage());
             }
 
+        }
+    }
+
+    private void handleMessage(String msg) throws IOException {
+        if (msg.contains("connected")) {
+            socket.getOutputStream().write("Indeed, we are.".getBytes());
         }
     }
 
