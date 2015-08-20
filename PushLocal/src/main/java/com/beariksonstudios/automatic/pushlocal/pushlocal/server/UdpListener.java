@@ -25,7 +25,7 @@ public class UdpListener implements Runnable {
         while (Server.isRunning()) {
             try {
                 udpSocket.receive(packet);
-                handleMessage(new String(data), packet.getAddress());
+                handleMessage(new String(data).substring(0, packet.getLength()), packet.getAddress());
 
                 Thread.sleep(0);
             } catch (IOException | InterruptedException e) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp.TcpHandler;
 
@@ -50,9 +51,10 @@ public class Server {
         isRunning = true;
         this.context = context;
         try {
-            udpSocket = new DatagramSocket(7766);
+            udpSocket = new DatagramSocket(5566);
             udpSocket.setBroadcast(true);
-            serverSock = new ServerSocket(7777);
+            serverSock = new ServerSocket(5577);
+            Log.d("PushLocal", serverSock.getInetAddress().toString());
 
             udpListener = new UdpListener(udpSocket);
             udpThread = new Thread(udpListener);

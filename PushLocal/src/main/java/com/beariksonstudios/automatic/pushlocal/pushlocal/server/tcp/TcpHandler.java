@@ -1,5 +1,6 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp;
 
+import android.util.Log;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.io.IOException;
@@ -18,18 +19,17 @@ public class TcpHandler implements Runnable {
     public TcpHandler(ServerSocket serverSock) {
         this.serverSock = serverSock;
         this.messages = new ArrayList<>();
+        this.clients = new ArrayList<>();
     }
 
     @Override
     public void run() {
         while (Server.isRunning()) {
-            while (Server.isRunning()) {
-                try {
-                    Socket newSocket = serverSock.accept();
-                    addClient(newSocket);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Socket newSocket = serverSock.accept();
+                addClient(newSocket);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -45,9 +45,14 @@ public class TcpHandler implements Runnable {
         }
 
         if (!exists) {
-            System.out.println("Adding client from " + connection.getInetAddress().getHostName());
+            Log.v("PushLocal", "Adding client  " + connection.getInetAddress().getHostName());
             TcpClient tcpClient = new TcpClient(connection, this);
             tcpClient.start();
+            try {
+                tcpClient.sendMessage("we are connected");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             clients.add(tcpClient);
         }
     }
