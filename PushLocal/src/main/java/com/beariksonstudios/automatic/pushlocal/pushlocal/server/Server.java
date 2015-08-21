@@ -1,6 +1,7 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -146,5 +147,8 @@ public class Server {
                 return null;
             }
         }.execute();
+    }
+    public void sendNotification(String s, Bitmap icon){
+        tcpHandler.broadcastMessageToClients("notification" + UNIT + s);
     }
 }

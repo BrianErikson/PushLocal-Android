@@ -1,6 +1,7 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
     private static Context mContext;
-    public static String[] listValues = new String[] { "Network Discovery", "iPhone", "WindowsMobile",
+    public static String[] listValues = new String[] { "Network Discovery", "Test Notification", "WindowsMobile",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
@@ -37,6 +38,9 @@ public class MainActivity extends ActionBarActivity {
         MainListAdapter listAdapter = new MainListAdapter(this, R.layout.item_main_list, strings);
         list.setAdapter(listAdapter);
         list.setOnItemClickListener(new MainItemListener());
+
+        Intent notificationIntent = new Intent(this, NotificationListener.class);
+        startService(notificationIntent);
     }
 
 

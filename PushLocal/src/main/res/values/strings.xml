@@ -3,5 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="push_local_notifications">PushLocal Notifications</string>
     <string name="title_activity_network_disovery">NetworkDisoveryActivity</string>
 </resources>
