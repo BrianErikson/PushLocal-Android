@@ -6,7 +6,9 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
@@ -16,8 +18,8 @@ import java.net.InetAddress;
  * Created by BrianErikson on 8/18/2015.
  */
 public class SyncDialog extends Dialog {
-    private Context context;
     private final Pair<String, InetAddress> selectedDevice;
+    private Context context;
 
     public SyncDialog(Context context, Pair<String, InetAddress> device) {
         super(context);
@@ -36,14 +38,14 @@ public class SyncDialog extends Dialog {
 
         super.setContentView(view);
 
-        ListView list = (ListView)view.findViewById(R.id.listView_network_dialog);
+        ListView list = (ListView) view.findViewById(R.id.listView_network_dialog);
         list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog));
 
-        Button button = (Button)view.findViewById(R.id.button_network_dialog);
+        Button button = (Button) view.findViewById(R.id.button_network_dialog);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Sending connect packet to " +  selectedDevice.first, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Sending connect packet to " + selectedDevice.first, Toast.LENGTH_LONG).show();
                 Server.fetch().connectNotify(selectedDevice.second);
             }
         });

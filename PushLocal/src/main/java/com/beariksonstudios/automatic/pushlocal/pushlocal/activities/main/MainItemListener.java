@@ -22,11 +22,10 @@ public class MainItemListener implements OnItemClickListener {
         TextView textView = (TextView) view.findViewById(R.id.list_item_text);
 
         String stringText = textView.getText().toString();
-        if(stringText.contains("Network Discovery")){
+        if (stringText.contains("Network Discovery")) {
             Intent intent = new Intent(view.getContext(), NetworkDisoveryActivity.class);
             view.getContext().startActivity(intent);
-        }
-        else if (stringText.contains("Test Notification")) {
+        } else if (stringText.contains("Test Notification")) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(view.getContext())
                     .setSmallIcon(android.R.drawable.arrow_up_float)
                     .setContentText("This is a test notification")

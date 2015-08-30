@@ -20,10 +20,10 @@ import java.util.ArrayList;
  * Created by nphel on 8/16/2015.
  */
 public class Server {
-    public static String UNIT = Character.toString((char)  31);
-    public static String RECORD = Character.toString((char)30);
+    public static String UNIT = Character.toString((char) 31);
+    public static String RECORD = Character.toString((char) 30);
     public static String GROUP = Character.toString((char) 29);
-    public static String FILE = Character.toString((char)  28);
+    public static String FILE = Character.toString((char) 28);
 
     private static Server singleton;
     private static volatile boolean isRunning = false;
@@ -148,7 +148,8 @@ public class Server {
             }
         }.execute();
     }
-    public void sendNotification(String s, Bitmap icon){
+
+    public void sendNotification(String s, Bitmap icon) {
         tcpHandler.broadcastMessageToClients("notification" + UNIT + s);
     }
 }

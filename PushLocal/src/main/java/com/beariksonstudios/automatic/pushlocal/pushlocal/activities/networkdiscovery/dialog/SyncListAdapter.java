@@ -13,11 +13,11 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
  * Created by BrianErikson on 8/18/2015.
  */
 public class SyncListAdapter extends ArrayAdapter<String> {
-    private Context context;
     public static String[] choices = {
             "Notifications",
             "Text Messages"
     };
+    private Context context;
 
     public SyncListAdapter(Context context, int resource) {
         super(context, resource, choices);
