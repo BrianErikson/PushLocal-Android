@@ -1,5 +1,6 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Pair;
@@ -16,6 +17,9 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
     private Server server;
@@ -48,10 +52,23 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
 
         deviceListener = new DeviceListener() {
             @Override
-            public void onDeviceDiscovery(Pair<String, InetAddress> device) {
+            public void onDeviceDiscovery(final Pair<String, InetAddress> device) {
                 _this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        SharedPreferences prefs = getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, MODE_PRIVATE);
+
+                        SharedPreferences.Editor editor = getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, MODE_PRIVATE).edit();
+                        Set<String> hostNames = prefs.getStringSet("hostNames", new HashSet<String>());
+                        hostNames.add(device.first);
+                        editor.putStringSet("hostNames", hostNames);
+
+                        Set<String> addresses = prefs.getStringSet("addresses", new HashSet<String>());
+                        addresses.add(Arrays.toString(device.second.getAddress()));
+                        editor.putStringSet("addresses", addresses);
+
+                        editor.commit();
+
                         dListAdapter.notifyDataSetChanged();
                     }
                 });

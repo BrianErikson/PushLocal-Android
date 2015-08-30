@@ -18,13 +18,13 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
-    public static String[] listValues = new String[]{"Network Discovery", "Test Notification", "WindowsMobile",
+    public static String[] listValues = new String[] { "Network Discovery", "Test Notification", "Saved Devices",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
             "Android", "iPhone", "WindowsMobile"};
     private static Context mContext;
-
+    public static String SAVED_DEVICES_FILE = "SavedDevicesFile";
     public static Context getContext() {
         return mContext;
     }

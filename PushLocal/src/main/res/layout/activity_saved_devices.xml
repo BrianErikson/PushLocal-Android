@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                tools:context="com.beariksonstudios.automatic.pushlocal.pushlocal.activities.saveddevices.SavedDevices"
+              android:background="#0096df">
+
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="481dp"
+            android:id="@+id/saved_devices_list" android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="false" android:background="#1cc4e7"/>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true" android:weightSum="1">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove Device"
+                android:id="@+id/remove_device" android:layout_gravity="bottom" android:layout_weight="0.5"
+                android:background="#ff002f36" android:textColor="#ffd3ecf0"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:id="@+id/device_settings" android:layout_weight="0.5" android:layout_gravity="bottom"
+                android:textColor="#ffd3ecf0" android:background="#ff002f36"/>
+    </LinearLayout>
+</LinearLayout>

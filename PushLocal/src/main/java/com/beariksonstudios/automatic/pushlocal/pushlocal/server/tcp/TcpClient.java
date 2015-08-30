@@ -27,8 +27,9 @@ public class TcpClient extends Thread {
         while (Server.isRunning()) {
             try {
                 if (socket.getInputStream().available() >= 0) {
-                    int len = socket.getInputStream().read(data);
-                    String str = new String(data).substring(0, len);
+                    socket.getInputStream().read(data);
+                    String str = new String(data);
+                    str = str.trim();
                     data = new byte[PACKET_SIZE];
 
                     Log.d("PushLocal", "Recieved Message from " + socket.getInetAddress().getHostName() + ": " + str);
