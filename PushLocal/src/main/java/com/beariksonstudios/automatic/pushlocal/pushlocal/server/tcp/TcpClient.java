@@ -24,7 +24,7 @@ public class TcpClient extends Thread {
     public void run() {
         byte[] data = new byte[PACKET_SIZE];
 
-        while (Server.isRunning()) {
+        while (Server.isRunning() && !socket.isClosed()) {
             try {
                 if (socket.getInputStream().available() >= 0) {
                     socket.getInputStream().read(data);
@@ -39,8 +39,9 @@ public class TcpClient extends Thread {
             } catch (IOException | InterruptedException e) {
                 Log.e("PushLocal", " " + socket.getInetAddress().toString() + e.getMessage());
             }
-
         }
+
+        tcpHandler.removeClient(this);
     }
 
     private void handleMessage(String msg) throws IOException {

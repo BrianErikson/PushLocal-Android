@@ -60,4 +60,9 @@ public class TcpHandler implements Runnable {
             }
         }
     }
+
+    // TcpClient(s) thread
+    public synchronized void removeClient(TcpClient client) {
+        clients.remove(client);
+    }
 }
