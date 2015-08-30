@@ -22,7 +22,10 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
     private DeviceListener deviceListener;
 
     public NetworkDisoveryActivity() {
-        this.server = new Server(MainActivity.getContext());
+        if (Server.fetch() == null)
+            this.server = new Server(MainActivity.getContext());
+        else
+            this.server = Server.fetch();
     }
 
     @Override
