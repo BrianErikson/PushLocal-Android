@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,21 +20,24 @@ import java.util.Set;
  */
 public class SavedDevicesAdapter extends ArrayAdapter<String> {
     private Context context;
-    private String[] hostNames;
+    private ArrayList<String> hostNames = new ArrayList<>();
+
     public SavedDevicesAdapter(Context context, int resource){
         super(context, resource);
         this.context = context;
         SharedPreferences prefs = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Activity.MODE_PRIVATE);
-        hostNames = (String[]) prefs.getStringSet("hostNames", new HashSet<String>()).toArray();
+        Set<String> set = prefs.getStringSet("hostNames", new HashSet<String>());
+        for (String s : set) {
+            hostNames.add(s);
+        }
+
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View view = inflater.inflate(R.layout.item_main_list, parent, false);
-        TextView textView = (TextView) view.findViewById(R.id.list_item_text);
-        textView.setText(hostNames[position]);
+        TextView textView = (TextView) convertView.findViewById(R.id.list_item_text);
+        textView.setText(hostNames.get(position));
 
-        return super.getView(position, convertView, parent);
+        return convertView;
     }
 }

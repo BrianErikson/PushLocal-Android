@@ -8,13 +8,13 @@ import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 
 
-public class SavedDevices extends ActionBarActivity {
+public class SavedDevicesActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_devices);
-        ListView list = (ListView) findViewById(R.id.listView);
+        ListView list = (ListView) findViewById(R.id.saved_devices_list);
 
         list.setAdapter(new SavedDevicesAdapter(this, R.layout.item_main_list));
         //TODO: create listener here
