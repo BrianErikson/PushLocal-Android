@@ -39,7 +39,7 @@
         </service>
 
         <activity
-            android:name=".activities.saveddevices.SavedDevices"
+            android:name=".activities.saveddevices.SavedDevicesActivity"
             android:label="@string/title_activity_saved_devices"
             android:parentActivityName=".activities.main.MainActivity" >
             <meta-data

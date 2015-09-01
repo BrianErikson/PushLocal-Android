@@ -26,16 +26,19 @@ public class TcpClient extends Thread {
 
         while (Server.isRunning() && !socket.isClosed()) {
             try {
-                if (socket.getInputStream().available() >= 0) {
-                    socket.getInputStream().read(data);
-                    String str = new String(data);
-                    str = str.trim();
-                    data = new byte[PACKET_SIZE];
-
-                    Log.d("PushLocal", "Recieved Message from " + socket.getInetAddress().getHostName() + ": " + str);
-                    handleMessage(str);
-                    Thread.sleep(0);
+                int len = socket.getInputStream().read(data);
+                if (len < 0) {
+                    socket.close();
+                    break;
                 }
+
+                String str = new String(data);
+                str = str.trim();
+                data = new byte[PACKET_SIZE];
+
+                Log.d("PushLocal", "Recieved Message from " + socket.getInetAddress().getHostName() + ": " + str);
+                handleMessage(str);
+                Thread.sleep(0);
             } catch (IOException | InterruptedException e) {
                 Log.e("PushLocal", " " + socket.getInetAddress().toString() + e.getMessage());
             }
