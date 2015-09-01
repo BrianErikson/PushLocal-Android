@@ -2,6 +2,7 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdis
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by BrianErikson on 8/18/2015.
@@ -42,11 +47,26 @@ public class SyncDialog extends Dialog {
         list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog));
 
         Button button = (Button) view.findViewById(R.id.button_network_dialog);
+
+        final SyncDialog _this = this;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Sending connect packet to " + selectedDevice.first, Toast.LENGTH_LONG).show();
+                SharedPreferences prefs = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Context.MODE_PRIVATE).edit();
+                Set<String> hostNames = prefs.getStringSet("hostNames", new HashSet<String>());
+                hostNames.add(selectedDevice.first);
+                editor.putStringSet("hostNames", hostNames);
+
+                Set<String> addresses = prefs.getStringSet("addresses", new HashSet<String>());
+                addresses.add(Arrays.toString(selectedDevice.second.getAddress()));
+                editor.putStringSet("addresses", addresses);
+
+                editor.apply();
+
                 Server.fetch().connectNotify(selectedDevice.second);
+                _this.dismiss();
             }
         });
 

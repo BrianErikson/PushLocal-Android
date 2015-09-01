@@ -56,19 +56,6 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
                 _this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SharedPreferences prefs = getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, MODE_PRIVATE);
-
-                        SharedPreferences.Editor editor = getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, MODE_PRIVATE).edit();
-                        Set<String> hostNames = prefs.getStringSet("hostNames", new HashSet<String>());
-                        hostNames.add(device.first);
-                        editor.putStringSet("hostNames", hostNames);
-
-                        Set<String> addresses = prefs.getStringSet("addresses", new HashSet<String>());
-                        addresses.add(Arrays.toString(device.second.getAddress()));
-                        editor.putStringSet("addresses", addresses);
-
-                        editor.commit();
-
                         dListAdapter.notifyDataSetChanged();
                     }
                 });

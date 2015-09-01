@@ -26,8 +26,14 @@ public class MainListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View view = inflater.inflate(R.layout.item_main_list, parent, false);
+        View view;
+        if (convertView == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(R.layout.item_main_list, parent, false);
+        }
+        else
+            view = convertView;
+
         TextView textView = (TextView) view.findViewById(R.id.list_item_text);
         textView.setText(strings.get(position));
 
