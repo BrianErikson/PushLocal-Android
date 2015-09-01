@@ -24,7 +24,6 @@ public class MainActivity extends ActionBarActivity {
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
             "Android", "iPhone", "WindowsMobile"};
     private static Context mContext;
-    public static String SAVED_DEVICES_FILE = "SavedDevicesFile";
     public static Context getContext() {
         return mContext;
     }

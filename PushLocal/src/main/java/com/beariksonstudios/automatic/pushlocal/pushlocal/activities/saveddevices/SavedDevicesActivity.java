@@ -1,11 +1,19 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.saveddevices;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.Prefs;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class SavedDevicesActivity extends ActionBarActivity {
@@ -16,7 +24,14 @@ public class SavedDevicesActivity extends ActionBarActivity {
         setContentView(R.layout.activity_saved_devices);
         ListView list = (ListView) findViewById(R.id.saved_devices_list);
 
-        list.setAdapter(new SavedDevicesAdapter(this, R.layout.item_main_list));
+        SharedPreferences prefs = getSharedPreferences(Prefs.SAVED_DEVICES_FILE, Activity.MODE_PRIVATE);
+        Set<String> set = prefs.getStringSet(Prefs.HOSTNAME_SET, new HashSet<String>());
+        ArrayList<String> hostNames = new ArrayList<>();
+        for (String s : set) {
+            Log.d("PushLocal", "Retrieved host name: " + s);
+            hostNames.add(s);
+        }
+        list.setAdapter(new SavedDevicesAdapter(this, R.layout.item_main_list, hostNames));
         //TODO: create listener here
     }
 

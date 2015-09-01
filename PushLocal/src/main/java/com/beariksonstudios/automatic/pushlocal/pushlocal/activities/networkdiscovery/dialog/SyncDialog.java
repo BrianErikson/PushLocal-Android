@@ -10,6 +10,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.Prefs;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
@@ -52,18 +53,30 @@ public class SyncDialog extends Dialog {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences prefs = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Context.MODE_PRIVATE);
+                SharedPreferences prefs = context.getSharedPreferences(Prefs.SAVED_DEVICES_FILE, Context.MODE_PRIVATE);
+                Set<String> hostNames = prefs.getStringSet(Prefs.HOSTNAME_SET, new HashSet<String>());
+                Set<String> addresses = prefs.getStringSet(Prefs.ADDRESS_SET, new HashSet<String>());
 
-                SharedPreferences.Editor editor = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Context.MODE_PRIVATE).edit();
-                Set<String> hostNames = prefs.getStringSet("hostNames", new HashSet<String>());
-                hostNames.add(selectedDevice.first);
-                editor.putStringSet("hostNames", hostNames);
+                String newAddress = Arrays.toString(selectedDevice.second.getAddress());
 
-                Set<String> addresses = prefs.getStringSet("addresses", new HashSet<String>());
-                addresses.add(Arrays.toString(selectedDevice.second.getAddress()));
-                editor.putStringSet("addresses", addresses);
+                boolean exists = false;
+                for (String address : addresses) {
+                    if (address.contentEquals(newAddress)) {
+                        exists = true;
+                        break;
+                    }
+                }
 
-                editor.apply();
+                if (!exists) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    hostNames.add(selectedDevice.first);
+                    editor.putStringSet(Prefs.HOSTNAME_SET, hostNames);
+
+                    addresses.add(newAddress);
+                    editor.putStringSet(Prefs.ADDRESS_SET, addresses);
+
+                    editor.apply();
+                }
 
                 Server.fetch().connectNotify(selectedDevice.second);
                 _this.dismiss();

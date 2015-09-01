@@ -3,16 +3,19 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.saveddevic
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.Prefs;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,17 +23,12 @@ import java.util.Set;
  */
 public class SavedDevicesAdapter extends ArrayAdapter<String> {
     private Context context;
-    private ArrayList<String> hostNames = new ArrayList<>();
+    private List<String> hostNames;
 
-    public SavedDevicesAdapter(Context context, int resource){
-        super(context, resource);
+    public SavedDevicesAdapter(Context context, int resource, List<String> hostNames){
+        super(context, resource, hostNames);
         this.context = context;
-        SharedPreferences prefs = context.getSharedPreferences(MainActivity.SAVED_DEVICES_FILE, Activity.MODE_PRIVATE);
-        Set<String> set = prefs.getStringSet("hostNames", new HashSet<String>());
-        for (String s : set) {
-            hostNames.add(s);
-        }
-
+        this.hostNames = hostNames;
     }
 
     @Override
@@ -44,6 +42,7 @@ public class SavedDevicesAdapter extends ArrayAdapter<String> {
             view = convertView;
 
         TextView textView = (TextView) view.findViewById(R.id.list_item_text);
+        Log.d("PushLocal", "adding to list: " + hostNames.get(position));
         textView.setText(hostNames.get(position));
 
         return view;
