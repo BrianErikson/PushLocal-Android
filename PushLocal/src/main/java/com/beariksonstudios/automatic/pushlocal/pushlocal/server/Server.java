@@ -1,10 +1,16 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
+import android.app.IntentService;
+import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.util.Log;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp.TcpHandler;
 
@@ -18,15 +24,13 @@ import java.util.ArrayList;
 /**
  * Created by nphel on 8/16/2015.
  */
-public class Server {
+public class Server extends Service {
     public static String UNIT = Character.toString((char) 31);
     public static String RECORD = Character.toString((char) 30);
     public static String GROUP = Character.toString((char) 29);
     public static String FILE = Character.toString((char) 28);
 
-    private static Server singleton;
     private static volatile boolean isRunning = false;
-    private Context context;
 
     private DatagramSocket udpSocket;
     private Thread udpThread;
@@ -40,23 +44,23 @@ public class Server {
 
     private ArrayList<Device> discoveredDevices;
 
-    public Server(Context context) {
-        if (singleton != null)
-            throw new IllegalStateException("Server already instantiated");
+    public Server() {
 
-        singleton = this;
         discoveredDevices = new ArrayList<>();
         deviceListeners = new ArrayList<>();
-
         isRunning = true;
-        this.context = context;
+
+        IntentFilter iFilter = new IntentFilter();
+        iFilter.addAction("broadcast");
+        registerReceiver(new BroadcastReceiver(), iFilter);
+
         try {
             udpSocket = new DatagramSocket(5566);
             udpSocket.setBroadcast(true);
             serverSock = new ServerSocket(5577);
             Log.d("PushLocal", serverSock.getInetAddress().toString());
 
-            udpListener = new UdpListener(udpSocket);
+            udpListener = new UdpListener(udpSocket, this);
             udpThread = new Thread(udpListener);
             udpThread.start();
 
@@ -67,10 +71,6 @@ public class Server {
             e.printStackTrace();
             isRunning = false;
         }
-    }
-
-    public static Server fetch() {
-        return singleton;
     }
 
     public static boolean isRunning() {
@@ -86,26 +86,19 @@ public class Server {
 
         if (newDevice) {
             discoveredDevices.add(device);
-            for (DeviceListener listener : deviceListeners) {
-                listener.onDeviceDiscovery(device);
-            }
+            Intent intent = new Intent();
+            intent.putExtra("HostName", device.hostName);
+            intent.putExtra("IpAddress", device.ipAddress);
+            intent.setAction("NewDevice");
+            sendBroadcast(intent);
         }
     }
-
-    public void addDeviceListener(DeviceListener listener) {
-        deviceListeners.add(listener);
-    }
-
-    public void removeDeviceListener(DeviceListener listener) {
-        deviceListeners.remove(listener);
-    }
-
     public ArrayList<Device> getDiscoveredDevices() {
         return discoveredDevices;
     }
 
     InetAddress getBroadcastAddress() throws IOException {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         DhcpInfo dhcp = wifi.getDhcpInfo();
         // handle null somehow
 
@@ -148,7 +141,28 @@ public class Server {
         }.execute();
     }
 
-    public void sendNotification(String s, Bitmap icon) {
+    public void sendNotification(String s) {
         tcpHandler.broadcastMessageToClients("notification" + UNIT + s);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    private class BroadcastReceiver extends android.content.BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("broadcast")){
+                broadcast();
+            }
+            else if(intent.getAction().equals("Connect")){
+                connectNotify(intent.getStringExtra("IpAddress"));
+            }
+            else if(intent.getAction().equals("Notification")){
+                sendNotification(intent.getStringExtra("Notification"));
+            }
+        }
     }
 }

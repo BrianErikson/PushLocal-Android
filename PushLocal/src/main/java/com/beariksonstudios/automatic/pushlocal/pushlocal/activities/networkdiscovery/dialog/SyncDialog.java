@@ -2,6 +2,7 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdis
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -50,9 +51,12 @@ public class SyncDialog extends Dialog {
                 boolean success = db.insertDevice(selectedDevice);
 
                 if (!success) // possibly already exists so try updating
-                    db.updateDevice(selectedDevice);
+                   db.updateDevice(selectedDevice);
 
-                Server.fetch().connectNotify(selectedDevice.ipAddress);
+                Intent intent = new Intent();
+                intent.putExtra("IpAddress", selectedDevice.ipAddress);
+                intent.setAction("Connect");
+                context.sendBroadcast(intent);
                 _this.dismiss();
             }
         });

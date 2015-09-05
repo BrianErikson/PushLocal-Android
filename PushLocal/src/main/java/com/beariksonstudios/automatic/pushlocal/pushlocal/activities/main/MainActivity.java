@@ -1,10 +1,9 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.IntentService;
+import android.content.*;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
@@ -25,7 +24,6 @@ public class MainActivity extends ActionBarActivity {
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
             "Android", "iPhone", "WindowsMobile"};
     private static Context mContext;
-    private Server server;
 
     public static Context getContext() {
         return mContext;
@@ -36,11 +34,6 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
-
-        if (Server.fetch() == null)
-            this.server = new Server(MainActivity.getContext());
-        else
-            this.server = Server.fetch();
 
         ListView list = (ListView) findViewById(R.id.listView);
 

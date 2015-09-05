@@ -37,6 +37,10 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".server.Server"
+            android:label="PushLocal Server"
+             />
 
         <activity
             android:name=".activities.saveddevices.SavedDevicesActivity"

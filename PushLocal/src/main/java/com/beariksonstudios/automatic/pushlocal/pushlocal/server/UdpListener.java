@@ -10,9 +10,11 @@ import java.net.InetAddress;
  */
 public class UdpListener implements Runnable {
     private DatagramSocket udpSocket;
+    private Server server;
 
-    public UdpListener(DatagramSocket udpSocket) {
+    public UdpListener(DatagramSocket udpSocket, Server server) {
         this.udpSocket = udpSocket;
+        this.server = server;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class UdpListener implements Runnable {
     private void handleMessage(String msg, InetAddress fromAddress) {
         if (msg.contains("hostName")) {
             String[] split = msg.split(Server.UNIT);
-            Server.fetch().addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress()));
+            server.addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress()));
         }
     }
 }
