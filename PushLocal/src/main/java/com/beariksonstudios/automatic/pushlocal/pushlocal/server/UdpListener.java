@@ -1,7 +1,5 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
-import android.util.Pair;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -38,7 +36,7 @@ public class UdpListener implements Runnable {
     private void handleMessage(String msg, InetAddress fromAddress) {
         if (msg.contains("hostName")) {
             String[] split = msg.split(Server.UNIT);
-            Server.fetch().addDiscoveredDevice(new Pair<>(split[1], fromAddress));
+            Server.fetch().addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress()));
         }
     }
 }

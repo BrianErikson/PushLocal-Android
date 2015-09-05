@@ -13,17 +13,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
-    public static String[] listValues = new String[] { "Network Discovery", "Test Notification", "Saved Devices",
+    public static String[] listValues = new String[]{"Network Discovery", "Test Notification", "Saved Devices",
             "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
             "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
             "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
             "Android", "iPhone", "WindowsMobile"};
     private static Context mContext;
+    private Server server;
+
     public static Context getContext() {
         return mContext;
     }
@@ -33,6 +36,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
+
+        if (Server.fetch() == null)
+            this.server = new Server(MainActivity.getContext());
+        else
+            this.server = Server.fetch();
+
         ListView list = (ListView) findViewById(R.id.listView);
 
         final ArrayList<String> strings = new ArrayList<String>();

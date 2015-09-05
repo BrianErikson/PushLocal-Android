@@ -26,8 +26,7 @@ public class MainItemListener implements OnItemClickListener {
         if (stringText.contains("Network Discovery")) {
             Intent intent = new Intent(view.getContext(), NetworkDisoveryActivity.class);
             view.getContext().startActivity(intent);
-        }
-        else if (stringText.contains("Test Notification")) {
+        } else if (stringText.contains("Test Notification")) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(view.getContext())
                     .setSmallIcon(android.R.drawable.arrow_up_float)
                     .setContentText("This is a test notification")
@@ -35,8 +34,7 @@ public class MainItemListener implements OnItemClickListener {
                     .setSubText("subText of Test");
             NotificationManager notificationManager = (NotificationManager) view.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(1234, builder.build());
-        }
-        else if (stringText.contains("Saved Devices")) {
+        } else if (stringText.contains("Saved Devices")) {
             Intent intent = new Intent(view.getContext(), SavedDevicesActivity.class);
             view.getContext().startActivity(intent);
         }

@@ -2,33 +2,29 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.saveddevic
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.Prefs;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by nphel on 8/28/2015.
  */
-public class SavedDevicesAdapter extends ArrayAdapter<String> {
+public class SavedDevicesAdapter extends ArrayAdapter<Device> {
     private Context context;
-    private List<String> hostNames;
+    private List<Device> devices;
 
-    public SavedDevicesAdapter(Context context, int resource, List<String> hostNames){
-        super(context, resource, hostNames);
+    public SavedDevicesAdapter(Context context, int resource, ArrayList<Device> devices) {
+        super(context, resource, devices);
         this.context = context;
-        this.hostNames = hostNames;
+        this.devices = devices;
     }
 
     @Override
@@ -37,13 +33,12 @@ public class SavedDevicesAdapter extends ArrayAdapter<String> {
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(R.layout.item_main_list, parent, false);
-        }
-        else
+        } else
             view = convertView;
 
         TextView textView = (TextView) view.findViewById(R.id.list_item_text);
-        Log.d("PushLocal", "adding to list: " + hostNames.get(position));
-        textView.setText(hostNames.get(position));
+        Log.d("PushLocal", "adding to list: " + devices.get(position));
+        textView.setText(devices.get(position).hostName);
 
         return view;
     }

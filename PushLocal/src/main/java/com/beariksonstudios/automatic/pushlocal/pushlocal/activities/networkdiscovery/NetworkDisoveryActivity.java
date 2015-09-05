@@ -1,9 +1,7 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +11,9 @@ import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog.SyncDialog;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
-
-import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
     private Server server;
@@ -52,7 +46,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
 
         deviceListener = new DeviceListener() {
             @Override
-            public void onDeviceDiscovery(final Pair<String, InetAddress> device) {
+            public void onDeviceDiscovery(final Device device) {
                 _this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

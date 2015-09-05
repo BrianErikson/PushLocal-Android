@@ -6,7 +6,6 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.Pair;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp.TcpHandler;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class Server {
     private ServerSocket serverSock;
     private ArrayList<DeviceListener> deviceListeners;
 
-    private ArrayList<Pair<String, InetAddress>> discoveredDevices;
+    private ArrayList<Device> discoveredDevices;
 
     public Server(Context context) {
         if (singleton != null)
@@ -78,10 +77,10 @@ public class Server {
         return isRunning;
     }
 
-    public synchronized void addDiscoveredDevice(Pair<String, InetAddress> device) {
+    public synchronized void addDiscoveredDevice(Device device) {
         boolean newDevice = true;
-        for (Pair<String, InetAddress> discoveredDevice : discoveredDevices) {
-            if (discoveredDevice.first.contains(device.first))
+        for (Device discoveredDevice : discoveredDevices) {
+            if (discoveredDevice.hostName.contains(device.hostName))
                 newDevice = false;
         }
 
@@ -101,7 +100,7 @@ public class Server {
         deviceListeners.remove(listener);
     }
 
-    public ArrayList<Pair<String, InetAddress>> getDiscoveredDevices() {
+    public ArrayList<Device> getDiscoveredDevices() {
         return discoveredDevices;
     }
 
@@ -133,13 +132,13 @@ public class Server {
         }.execute();
     }
 
-    public void connectNotify(final InetAddress address) {
+    public void connectNotify(final String address) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
                     byte[] data = "connect".getBytes();
-                    DatagramPacket packet = new DatagramPacket(data, data.length, address, 7766);
+                    DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(address), 7766);
                     udpSocket.send(packet);
                 } catch (IOException e) {
                     e.printStackTrace();
