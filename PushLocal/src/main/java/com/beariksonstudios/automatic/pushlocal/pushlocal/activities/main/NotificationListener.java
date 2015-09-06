@@ -11,6 +11,9 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
  * Created by nphel on 8/21/2015.
  */
 public class NotificationListener extends NotificationListenerService {
+    public static final String NOTIFICATION_ACTION = MainActivity.BROADCAST_PREFIX + "Notification";
+    public static final String NOTIFICATION_ACTION_NOTIFICATION = "Notification";
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         String title = sbn.getNotification().extras.getString("android.title");
@@ -19,8 +22,8 @@ public class NotificationListener extends NotificationListenerService {
         String notification = title + Server.UNIT + text + Server.UNIT + subText;
         Log.d("PushLocal", notification);
         Intent intent = new Intent();
-        intent.putExtra("Notification", notification);
-        intent.setAction("Notification");
+        intent.putExtra(NOTIFICATION_ACTION_NOTIFICATION, notification);
+        intent.setAction(NOTIFICATION_ACTION);
         sendBroadcast(intent);
     }
 }

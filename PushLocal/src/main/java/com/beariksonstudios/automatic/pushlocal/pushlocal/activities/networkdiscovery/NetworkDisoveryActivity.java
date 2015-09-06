@@ -12,14 +12,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog.SyncDialog;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.util.ArrayList;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
-    private DeviceListener deviceListener;
+    public static final String BROADCAST_ACTION = MainActivity.BROADCAST_PREFIX + "Broadcast";
+
     private ArrayList<Device> discoveredDevices = new ArrayList<>();
     private BroadcastReceiver broadcastReceiver;
     private DiscoveredListAdapter dListAdapter;
@@ -47,7 +50,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBroadcast(new Intent().setAction("broadcast"));
+                sendBroadcast(new Intent().setAction(BROADCAST_ACTION));
             }
         });
     }
@@ -58,7 +61,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
 
         broadcastReceiver = new BroadcastReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("NewDevice");
+        filter.addAction(Server.NEW_DEVICE_ACTION);
         registerReceiver(broadcastReceiver, filter);
     }
 
@@ -94,8 +97,10 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
     private class BroadcastReceiver extends android.content.BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("NewDevice")) {
-                discoveredDevices.add(new Device(intent.getStringExtra("HostName"), intent.getStringExtra("IpAddress")));
+            if (intent.getAction().equals(Server.NEW_DEVICE_ACTION)) {
+                discoveredDevices.add(new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
+                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS)));
+
                 dListAdapter.notifyDataSetChanged();
             }
         }

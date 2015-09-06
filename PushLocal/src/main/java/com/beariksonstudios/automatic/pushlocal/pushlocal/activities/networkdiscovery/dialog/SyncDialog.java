@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.PLDatabase;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
@@ -17,6 +18,9 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
  * Created by BrianErikson on 8/18/2015.
  */
 public class SyncDialog extends Dialog {
+    public static final String CONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Connect";
+    public static final String CONNECT_ACTION_IP_ADDRESS = "IpAddress";
+
     private final Device selectedDevice;
     private Context context;
 
@@ -54,9 +58,9 @@ public class SyncDialog extends Dialog {
                    db.updateDevice(selectedDevice);
 
                 Intent intent = new Intent();
-                intent.putExtra("IpAddress", selectedDevice.ipAddress);
-                intent.setAction("Connect");
-                context.sendBroadcast(intent);
+                intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
+                intent.setAction(CONNECT_ACTION);
+                _this.context.sendBroadcast(intent);
                 _this.dismiss();
             }
         });
