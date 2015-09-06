@@ -79,6 +79,10 @@ public class Server extends Service {
 
     @Override
     public void onCreate() {
+        startReceiver();
+    }
+
+    private void startReceiver() {
         IntentFilter iFilter = new IntentFilter();
         iFilter.addAction(NetworkDisoveryActivity.BROADCAST_ACTION);
         iFilter.addAction(SyncDialog.CONNECT_ACTION);
@@ -166,6 +170,9 @@ public class Server extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (broadcastReceiver == null) {
+            startReceiver();
+        }
         return START_STICKY;
     }
 
