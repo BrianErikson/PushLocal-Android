@@ -64,5 +64,12 @@ public class TcpHandler implements Runnable {
     // TcpClient(s) thread
     public synchronized void removeClient(TcpClient client) {
         clients.remove(client);
+        Log.e("PushLocal", "Removing disconnected client");
+    }
+
+    public synchronized void dispose() throws IOException {
+        for (TcpClient client : clients) {
+            client.dispose();
+        }
     }
 }

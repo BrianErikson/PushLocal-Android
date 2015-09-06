@@ -43,16 +43,13 @@ public class Server extends Service {
     private ArrayList<DeviceListener> deviceListeners;
 
     private ArrayList<Device> discoveredDevices;
+    private BroadcastReceiver broadcastReceiver;
 
     public Server() {
 
         discoveredDevices = new ArrayList<>();
         deviceListeners = new ArrayList<>();
         isRunning = true;
-
-        IntentFilter iFilter = new IntentFilter();
-        iFilter.addAction("broadcast");
-        registerReceiver(new BroadcastReceiver(), iFilter);
 
         try {
             udpSocket = new DatagramSocket(5566);
@@ -71,6 +68,14 @@ public class Server extends Service {
             e.printStackTrace();
             isRunning = false;
         }
+    }
+
+    @Override
+    public void onCreate() {
+        IntentFilter iFilter = new IntentFilter();
+        iFilter.addAction("broadcast");
+        broadcastReceiver = new BroadcastReceiver();
+        registerReceiver(broadcastReceiver, iFilter);
     }
 
     public static boolean isRunning() {
@@ -148,6 +153,26 @@ public class Server extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        isRunning = false;
+        try {
+            udpListener.dispose();
+            tcpHandler.dispose();
+            udpThread.join();
+            tcpThread.join();
+            serverSock.close();
+            unregisterReceiver(broadcastReceiver);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private class BroadcastReceiver extends android.content.BroadcastReceiver {

@@ -61,4 +61,8 @@ public class TcpClient extends Thread {
     public InetAddress getInetAddress() {
         return socket.getInetAddress();
     }
+
+    public synchronized void dispose() throws IOException {
+        socket.close();
+    }
 }

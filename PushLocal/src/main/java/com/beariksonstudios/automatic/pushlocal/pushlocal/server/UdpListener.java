@@ -41,4 +41,8 @@ public class UdpListener implements Runnable {
             server.addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress()));
         }
     }
+
+    public synchronized void dispose() {
+        udpSocket.close();
+    }
 }

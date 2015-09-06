@@ -1,16 +1,16 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.IntentService;
 import android.content.*;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
@@ -53,9 +53,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!isServiceEnabled()) {
+        ComponentName serviceName = startService(new Intent(this, Server.class));
+        if (serviceName != null)
+            Log.d("PushLocal", "Started or confirmed that Server service is running");
+        else
+            Toast.makeText(this, "ERROR: Could not start server", Toast.LENGTH_LONG).show();
+
+        if (!isServiceEnabled())
             showEnableDialog();
-        }
     }
 
     @Override
