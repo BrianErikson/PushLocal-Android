@@ -16,10 +16,11 @@ public class NotificationListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        String from = sbn.getPackageName();
         String title = sbn.getNotification().extras.getString("android.title");
         String text = sbn.getNotification().extras.getString("android.text");
         String subText = sbn.getNotification().extras.getString("android.subText");
-        String notification = title + Server.UNIT + text + Server.UNIT + subText;
+        String notification = from + Server.UNIT + title + Server.UNIT + text + Server.UNIT + subText;
         Log.d("PushLocal", notification);
         Intent intent = new Intent();
         intent.putExtra(NOTIFICATION_ACTION_NOTIFICATION, notification);
