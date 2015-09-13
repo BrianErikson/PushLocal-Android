@@ -1,7 +1,6 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
-import android.app.IntentService;
-import android.app.Service;
+import android.app.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +9,12 @@ import android.graphics.Bitmap;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.NotificationListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.NetworkDisoveryActivity;
@@ -51,6 +54,7 @@ public class Server extends Service {
 
     private ArrayList<Device> discoveredDevices;
     private BroadcastReceiver broadcastReceiver;
+    private static int NOTIFICATION_ID = 777;
 
     public Server() {
 
@@ -80,14 +84,31 @@ public class Server extends Service {
     @Override
     public void onCreate() {
         startReceiver();
+        startNotification();
     }
+    public void startNotification(){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("Push Local Server")
+                .setContentText("The Push Local server is running")
+                .setOnlyAlertOnce(true)
+                .setOngoing(true);
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
 
     private void startReceiver() {
         IntentFilter iFilter = new IntentFilter();
         iFilter.addAction(NetworkDisoveryActivity.BROADCAST_ACTION);
         iFilter.addAction(SyncDialog.CONNECT_ACTION);
         iFilter.addAction(NotificationListener.NOTIFICATION_ACTION);
-        broadcastReceiver = new BroadcastReceiver();
+        iFilter.addAction(NetworkDisoveryActivity.REQUEST_DEVICES_ACTION);
+        broadcastReceiver = new BroadcastReceiver(this);
         registerReceiver(broadcastReceiver, iFilter);
     }
 
@@ -189,9 +210,17 @@ public class Server extends Service {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 
     private class BroadcastReceiver extends android.content.BroadcastReceiver {
+
+        private final Server server;
+
+        public BroadcastReceiver(Server server) {
+            this.server = server;
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -203,6 +232,16 @@ public class Server extends Service {
             }
             else if(intent.getAction().equals(NotificationListener.NOTIFICATION_ACTION)){
                 sendNotification(intent.getStringExtra(NotificationListener.NOTIFICATION_ACTION_NOTIFICATION));
+            }
+            else if(intent.getAction().equals(NetworkDisoveryActivity.REQUEST_DEVICES_ACTION)){
+                for (Device device : discoveredDevices) {
+                    Log.e("PushLocal", device.hostName);
+                    Intent requestIntent = new Intent();
+                    requestIntent.putExtra(NEW_DEVICE_ACTION_HOSTNAME, device.hostName);
+                    requestIntent.putExtra(NEW_DEVICE_ACTION_IP_ADDRESS, device.ipAddress);
+                    requestIntent.setAction(NEW_DEVICE_ACTION);
+                    server.sendBroadcast(requestIntent);
+                }
             }
         }
     }

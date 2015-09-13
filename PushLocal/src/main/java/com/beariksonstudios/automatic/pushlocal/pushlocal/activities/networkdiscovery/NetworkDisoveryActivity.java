@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog.SyncDialog;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
     public static final String BROADCAST_ACTION = MainActivity.BROADCAST_PREFIX + "Broadcast";
-
+    public static final String REQUEST_DEVICES_ACTION = MainActivity.BROADCAST_PREFIX + "Request Devices";
     private ArrayList<Device> discoveredDevices = new ArrayList<>();
     private BroadcastReceiver broadcastReceiver;
     private DiscoveredListAdapter dListAdapter;
@@ -51,8 +52,12 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 sendBroadcast(new Intent().setAction(BROADCAST_ACTION));
+                Toast.makeText(_this,"Searching for Devices... :)", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
     }
 
     @Override
@@ -63,6 +68,11 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Server.NEW_DEVICE_ACTION);
         registerReceiver(broadcastReceiver, filter);
+        discoveredDevices.clear();
+        dListAdapter.notifyDataSetChanged();
+        Intent intent = new Intent();
+        intent.setAction(REQUEST_DEVICES_ACTION);
+        sendBroadcast(intent);
     }
 
     @Override

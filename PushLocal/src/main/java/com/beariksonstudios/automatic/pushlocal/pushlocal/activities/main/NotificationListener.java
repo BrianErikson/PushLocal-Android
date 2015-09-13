@@ -22,6 +22,7 @@ public class NotificationListener extends NotificationListenerService {
         String subText = sbn.getNotification().extras.getString("android.subText");
         String notification = from + Server.UNIT + title + Server.UNIT + text + Server.UNIT + subText;
         Log.d("PushLocal", notification);
+
         Intent intent = new Intent();
         intent.putExtra(NOTIFICATION_ACTION_NOTIFICATION, notification);
         intent.setAction(NOTIFICATION_ACTION);
