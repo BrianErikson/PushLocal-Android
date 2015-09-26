@@ -20,10 +20,8 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity {
     public static final String BROADCAST_PREFIX = "PushLocal.";
     public static String[] listValues = new String[]{"Network Discovery", "Test Notification", "Saved Devices",
-            "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-            "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-            "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-            "Android", "iPhone", "WindowsMobile"};
+            "Connected Devices"
+            };
     private static Context mContext;
 
     public static Context getContext() {

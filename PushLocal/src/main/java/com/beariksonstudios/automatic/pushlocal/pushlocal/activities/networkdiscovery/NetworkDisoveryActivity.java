@@ -20,6 +20,8 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.server.DeviceListener;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NetworkDisoveryActivity extends ActionBarActivity {
     public static final String BROADCAST_ACTION = MainActivity.BROADCAST_PREFIX + "Broadcast";
@@ -27,6 +29,7 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
     private ArrayList<Device> discoveredDevices = new ArrayList<>();
     private BroadcastReceiver broadcastReceiver;
     private DiscoveredListAdapter dListAdapter;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +54,9 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                timer.schedule(new DiscoveryTimer(discoveredDevices, _this), 5000);
                 sendBroadcast(new Intent().setAction(BROADCAST_ACTION));
-                Toast.makeText(_this,"Searching for Devices... :)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(_this, "Searching for Devices... :)", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -108,8 +112,10 @@ public class NetworkDisoveryActivity extends ActionBarActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Server.NEW_DEVICE_ACTION)) {
-                discoveredDevices.add(new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
-                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS)));
+                Device device = new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
+                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS));
+                discoveredDevices.add(device);
+                Toast.makeText(context, device.hostName + " Synced!",Toast.LENGTH_SHORT);
 
                 dListAdapter.notifyDataSetChanged();
             }
