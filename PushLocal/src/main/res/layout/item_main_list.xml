@@ -3,11 +3,22 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainmenu_list_radioButton" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
+            android:clickable="false" android:buttonTint="@color/radialButton_offline_color"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Test"
-            android:id="@+id/list_item_text" android:layout_alignParentStart="true"
-            android:textColor="#ffd3ecf0"/>
+            android:text="DeviceName"
+            android:id="@+id/mainmenu_list_devicename" android:layout_alignParentTop="true" android:layout_toEndOf="@+id/mainmenu_list_radioButton"
+            android:layout_alignBottom="@+id/mainmenu_list_radioButton" android:paddingTop="5dp" android:textSize="20dp"
+            android:layout_marginLeft="15dp"/>
+    <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/mainmenu_list_devicestateindicator" android:layout_alignParentTop="true" android:layout_toEndOf="@+id/mainmenu_list_devicename"
+            android:src="@android:drawable/arrow_down_float" android:layout_marginLeft="15dp"
+            android:layout_marginTop="4dp"/>
 </RelativeLayout>

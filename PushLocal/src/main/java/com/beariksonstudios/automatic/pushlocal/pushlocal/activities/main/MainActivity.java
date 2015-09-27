@@ -9,20 +9,29 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.PLDatabase;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog.SyncDialog;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 
 public class MainActivity extends ActionBarActivity {
+    public static final String BROADCAST_ACTION = MainActivity.BROADCAST_PREFIX + "Broadcast";
+    public static final String REQUEST_DEVICES_ACTION = MainActivity.BROADCAST_PREFIX + "Request Devices";
     public static final String BROADCAST_PREFIX = "PushLocal.";
-    public static String[] listValues = new String[]{"Network Discovery", "Test Notification", "Saved Devices",
-            "Connected Devices"
-            };
     private static Context mContext;
+    public ArrayList<Device> devices = new ArrayList<>();
+    private BroadcastReceiver broadcastReceiver;
+    private MainListAdapter listAdapter;
 
     public static Context getContext() {
         return mContext;
@@ -31,18 +40,34 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final MainActivity _this = this;
         mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
 
-        ListView list = (ListView) findViewById(R.id.listView);
+        ListView list = (ListView) findViewById(R.id.mainmenu_list);
 
-        final ArrayList<String> strings = new ArrayList<String>();
-        for (int i = 0; i < listValues.length; ++i) {
-            strings.add(listValues[i]);
-        }
-        MainListAdapter listAdapter = new MainListAdapter(this, R.layout.item_main_list, strings);
+        PLDatabase db = new PLDatabase(this);
+        devices = db.getDevices();
+        listAdapter = new MainListAdapter(this, R.layout.item_main_list, devices);
         list.setAdapter(listAdapter);
-        list.setOnItemClickListener(new MainItemListener());
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("PushLocal", "HAS BEEN CLICKED ON LIST ITEM!!");
+                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position));
+                syncDialog.show();
+            }
+        });
+        Button discover = (Button) findViewById(R.id.mainmenu_discoverbuttton);
+        final Timer timer = new Timer();
+        discover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timer.schedule(new DiscoveryTimer(devices, _this), 5000);
+                sendBroadcast(new Intent().setAction(BROADCAST_ACTION));
+                Toast.makeText(_this, "Searching for Devices... :)", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Intent notificationIntent = new Intent(this, NotificationListener.class);
         startService(notificationIntent);
@@ -51,7 +76,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        broadcastReceiver = new BroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Server.NEW_DEVICE_ACTION);
+        registerReceiver(broadcastReceiver, filter);
+        devices.clear();
+        listAdapter.notifyDataSetChanged();
+        Intent intent = new Intent();
+        intent.setAction(REQUEST_DEVICES_ACTION);
+        sendBroadcast(intent);
         ComponentName serviceName = startService(new Intent(this, Server.class));
         if (serviceName != null)
             Log.d("PushLocal", "Started or confirmed that Server service is running");
@@ -60,6 +93,12 @@ public class MainActivity extends ActionBarActivity {
 
         if (!isServiceEnabled())
             showEnableDialog();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -122,4 +161,23 @@ public class MainActivity extends ActionBarActivity {
         }
         return false;
     }
+    private class BroadcastReceiver extends android.content.BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Server.NEW_DEVICE_ACTION)) {
+                Device device = new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
+                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS),false ,intent.getBooleanExtra(Server.NEW_DEVICE_ACTION_STATE, false));
+                devices.add(device);
+
+                listAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }
+//NotificationCompat.Builder builder = new NotificationCompat.Builder(view.getContext())
+//        .setSmallIcon(android.R.drawable.arrow_up_float)
+//        .setContentText("This is a test notification")
+//        .setContentTitle("TEST NOTIFICATION")
+//        .setSubText("subText of Test");
+//NotificationManager notificationManager = (NotificationManager) view.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//notificationManager.notify(1234, builder.build());

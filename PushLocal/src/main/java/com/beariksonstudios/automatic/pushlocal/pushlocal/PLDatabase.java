@@ -88,7 +88,7 @@ public class PLDatabase extends SQLiteOpenHelper {
         for (int i = 0; i < cursor.getCount(); i++) {
             if (cursor.isAfterLast())
                 break;
-            devices.add(new Device(cursor.getString(hostNameCI), cursor.getString(ipAddressCI)));
+            devices.add(new Device(cursor.getString(hostNameCI), cursor.getString(ipAddressCI), true, false));
             cursor.moveToNext();
         }
 

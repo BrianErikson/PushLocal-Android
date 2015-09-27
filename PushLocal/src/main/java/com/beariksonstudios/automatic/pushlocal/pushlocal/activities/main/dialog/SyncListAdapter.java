@@ -1,4 +1,4 @@
-package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog;
+package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,7 @@ public class SyncListAdapter extends ArrayAdapter<String> {
         View view;
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            view = inflater.inflate(R.layout.item_network_dialog_list, parent, false);
+            view = inflater.inflate(R.layout.item_dialog_sync_list, parent, false);
         } else
             view = convertView;
 

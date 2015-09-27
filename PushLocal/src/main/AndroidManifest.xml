@@ -20,14 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.networkdiscovery.NetworkDisoveryActivity"
-            android:label="@string/title_activity_network_disovery"
-            android:parentActivityName=".activities.main.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity" />
-        </activity>
 
         <service
             android:name=".activities.main.NotificationListener"

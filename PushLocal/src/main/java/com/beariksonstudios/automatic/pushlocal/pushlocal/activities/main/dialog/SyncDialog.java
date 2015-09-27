@@ -1,4 +1,4 @@
-package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog;
+package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,7 +12,6 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.PLDatabase;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 
 /**
  * Created by BrianErikson on 8/18/2015.
@@ -34,7 +33,7 @@ public class SyncDialog extends Dialog {
     public void show() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_network_discovery, null);
+        View view = inflater.inflate(R.layout.dialog_main_sync, null);
 
         setCanceledOnTouchOutside(true);
         setCancelable(true);

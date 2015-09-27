@@ -1,7 +1,8 @@
-package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery;
+package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
 import android.content.Context;
 import android.widget.Toast;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
 
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ import java.util.TimerTask;
 public class DiscoveryTimer extends TimerTask{
 
     private final ArrayList<Device> devices;
-    private final NetworkDisoveryActivity context;
+    private final MainActivity context;
     int numberDevices;
 
-    public DiscoveryTimer(ArrayList<Device> devices, NetworkDisoveryActivity context){
+    public DiscoveryTimer(ArrayList<Device> devices, MainActivity context){
         this.devices = devices;
         this.context = context;
         numberDevices = devices.size();

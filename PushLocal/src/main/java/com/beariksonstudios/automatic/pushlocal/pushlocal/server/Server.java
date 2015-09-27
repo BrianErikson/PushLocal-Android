@@ -1,24 +1,19 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.server;
 
 import android.app.*;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.NotificationListener;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.NetworkDisoveryActivity;
-import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.networkdiscovery.dialog.SyncDialog;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog.SyncDialog;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.tcp.TcpHandler;
 
 import java.io.IOException;
@@ -35,6 +30,7 @@ public class Server extends Service {
     public static final String NEW_DEVICE_ACTION = MainActivity.BROADCAST_PREFIX + "NewDevice";
     public static final String NEW_DEVICE_ACTION_HOSTNAME = "HostName";
     public static final String NEW_DEVICE_ACTION_IP_ADDRESS = "IpAddress";
+    public static final String NEW_DEVICE_ACTION_STATE = "State";
     public static String UNIT = Character.toString((char) 31);
     public static String RECORD = Character.toString((char) 30);
     public static String GROUP = Character.toString((char) 29);
@@ -104,10 +100,10 @@ public class Server extends Service {
 
     private void startReceiver() {
         IntentFilter iFilter = new IntentFilter();
-        iFilter.addAction(NetworkDisoveryActivity.BROADCAST_ACTION);
+        iFilter.addAction(MainActivity.BROADCAST_ACTION);
         iFilter.addAction(SyncDialog.CONNECT_ACTION);
         iFilter.addAction(NotificationListener.NOTIFICATION_ACTION);
-        iFilter.addAction(NetworkDisoveryActivity.REQUEST_DEVICES_ACTION);
+        iFilter.addAction(MainActivity.REQUEST_DEVICES_ACTION);
         broadcastReceiver = new BroadcastReceiver(this);
         registerReceiver(broadcastReceiver, iFilter);
     }
@@ -128,6 +124,7 @@ public class Server extends Service {
             Intent intent = new Intent();
             intent.putExtra(NEW_DEVICE_ACTION_HOSTNAME, device.hostName);
             intent.putExtra(NEW_DEVICE_ACTION_IP_ADDRESS, device.ipAddress);
+            intent.putExtra(NEW_DEVICE_ACTION_STATE, device.connected);
             intent.setAction(NEW_DEVICE_ACTION);
             sendBroadcast(intent);
         }
@@ -224,7 +221,7 @@ public class Server extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(NetworkDisoveryActivity.BROADCAST_ACTION)){
+            if(intent.getAction().equals(MainActivity.BROADCAST_ACTION)){
                 broadcast();
             }
             else if(intent.getAction().equals(SyncDialog.CONNECT_ACTION)){
@@ -233,7 +230,7 @@ public class Server extends Service {
             else if(intent.getAction().equals(NotificationListener.NOTIFICATION_ACTION)){
                 sendNotification(intent.getStringExtra(NotificationListener.NOTIFICATION_ACTION_NOTIFICATION));
             }
-            else if(intent.getAction().equals(NetworkDisoveryActivity.REQUEST_DEVICES_ACTION)){
+            else if(intent.getAction().equals(MainActivity.REQUEST_DEVICES_ACTION)){
                 for (Device device : discoveredDevices) {
                     Log.e("PushLocal", device.hostName);
                     Intent requestIntent = new Intent();
