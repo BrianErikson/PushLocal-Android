@@ -12,12 +12,14 @@ import java.util.ArrayList;
  * Created by BrianErikson on 8/17/2015.
  */
 public class TcpHandler implements Runnable {
+    private final Server server;
     private ServerSocket serverSock;
     private ArrayList<TcpClient> clients;
 
-    public TcpHandler(ServerSocket serverSock) {
+    public TcpHandler(ServerSocket serverSock, Server server) {
         this.serverSock = serverSock;
         this.clients = new ArrayList<>();
+        this.server = server;
     }
 
     @Override
@@ -46,6 +48,7 @@ public class TcpHandler implements Runnable {
             Log.v("PushLocal", "Adding client  " + connection.getInetAddress().getHostName());
             TcpClient tcpClient = new TcpClient(connection, this);
             tcpClient.start();
+            server.onDeviceConnection(connection.getInetAddress().getHostAddress());
             clients.add(tcpClient);
         }
     }

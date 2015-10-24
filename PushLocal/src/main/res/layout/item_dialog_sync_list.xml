@@ -14,7 +14,7 @@
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
-                android:id="@+id/textView_item_network_dialog_list"
+                android:id="@+id/textView_item_dialog_list"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:layout_weight="1"
@@ -24,8 +24,8 @@
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/checkbox_item_network_dialog_list"
-                android:checked="true"
+                android:id="@+id/checkbox_item_dialog_list"
+                android:checked="false"
                 android:clickable="true"/>
     </LinearLayout>
 </RelativeLayout>

@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         ListView list = (ListView) findViewById(R.id.mainmenu_list);
 
         PLDatabase db = new PLDatabase(this);
-        devices = db.getDevices();
+        devices = db.getSavedDevices();
         listAdapter = new MainListAdapter(this, R.layout.item_main_list, devices);
         list.setAdapter(listAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
         broadcastReceiver = new BroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Server.NEW_DEVICE_ACTION);
+        filter.addAction(Server.CONNECTED_DEVICE_ACTION);
         registerReceiver(broadcastReceiver, filter);
         devices.clear();
         listAdapter.notifyDataSetChanged();
@@ -166,10 +167,20 @@ public class MainActivity extends ActionBarActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Server.NEW_DEVICE_ACTION)) {
                 Device device = new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
-                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS),false ,intent.getBooleanExtra(Server.NEW_DEVICE_ACTION_STATE, false));
+                        intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS),false ,intent.getBooleanExtra(Server.NEW_DEVICE_ACTION_STATE, false), true);
                 devices.add(device);
 
                 listAdapter.notifyDataSetChanged();
+            }
+            else if(intent.getAction().equals((Server.CONNECTED_DEVICE_ACTION))){
+                String ipAddress = intent.getStringExtra(Server.CONNECTED_DEVICE_ACTION_IPADDRESS);
+                for(Device d: devices){
+                    if(d.ipAddress.equals(ipAddress)){
+                        d.connected = true;
+                        listAdapter.notifyDataSetChanged();
+                        Toast.makeText(context, d.hostName + " is now connected Yo hommie", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }

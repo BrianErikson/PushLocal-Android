@@ -23,6 +23,7 @@ public class SyncDialog extends Dialog {
     private final Device selectedDevice;
     private Context context;
 
+
     public SyncDialog(Context context, Device device) {
         super(context);
         this.context = context;
@@ -41,7 +42,7 @@ public class SyncDialog extends Dialog {
         super.setContentView(view);
 
         ListView list = (ListView) view.findViewById(R.id.listView_network_dialog);
-        list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog));
+        list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog, this));
 
         Button button = (Button) view.findViewById(R.id.button_network_dialog);
 
@@ -49,13 +50,6 @@ public class SyncDialog extends Dialog {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PLDatabase db = new PLDatabase(_this.context);
-
-                boolean success = db.insertDevice(selectedDevice);
-
-                if (!success) // possibly already exists so try updating
-                   db.updateDevice(selectedDevice);
-
                 Intent intent = new Intent();
                 intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
                 intent.setAction(CONNECT_ACTION);
@@ -65,5 +59,9 @@ public class SyncDialog extends Dialog {
         });
 
         super.show();
+    }
+
+    public Device getSelectedDevice() {
+        return selectedDevice;
     }
 }

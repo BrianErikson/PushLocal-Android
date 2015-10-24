@@ -76,7 +76,7 @@ public class PLDatabase extends SQLiteOpenHelper {
         return false;
     }
 
-    public ArrayList<Device> getDevices() {
+    public ArrayList<Device> getSavedDevices() {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(DEVICE_TABLE_NAME, new String[]{DEVICE_COLUMN_HOSTNAME, DEVICE_COLUMN_IPADDRESS},
                 null, null, null, null, DEVICE_COLUMN_HOSTNAME);
@@ -88,7 +88,7 @@ public class PLDatabase extends SQLiteOpenHelper {
         for (int i = 0; i < cursor.getCount(); i++) {
             if (cursor.isAfterLast())
                 break;
-            devices.add(new Device(cursor.getString(hostNameCI), cursor.getString(ipAddressCI), true, false));
+            devices.add(new Device(cursor.getString(hostNameCI), cursor.getString(ipAddressCI), true, false, false));
             cursor.moveToNext();
         }
 

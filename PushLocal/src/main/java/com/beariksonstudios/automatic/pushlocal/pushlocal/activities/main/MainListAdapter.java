@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.AvoidXfermode;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -44,13 +45,19 @@ public class MainListAdapter extends ArrayAdapter<Device> {
 
         Device device = devices.get(position);
         RadioButton radioButton = (RadioButton) view.findViewById(R.id.mainmenu_list_radioButton);
-        int color = R.color.radialButton_offline_color;
         if(device.connected){
-            color = R.color.radialButton_online_color;
+            radioButton.setChecked(true);
         }
-        radioButton.setButtonTintList(ColorStateList.valueOf(color));
+        else{
+            radioButton.setChecked(false);
+        }
 
         TextView textView = (TextView) view.findViewById(R.id.mainmenu_list_devicename);
+        if(!device.isDiscovered){
+            textView.setTextColor(Color.GRAY);
+        }else{
+           textView.setTextColor(Color.BLACK);
+        }
         textView.setText(device.hostName);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.mainmenu_list_devicestateindicator);

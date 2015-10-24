@@ -38,7 +38,7 @@ public class UdpListener implements Runnable {
     private void handleMessage(String msg, InetAddress fromAddress) {
         if (msg.contains("hostName")) {
             String[] split = msg.split(Server.UNIT);
-            server.addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress(), false, false));
+            server.addDiscoveredDevice(new Device(split[1], fromAddress.getHostAddress(), false, false, true));
         }
     }
 

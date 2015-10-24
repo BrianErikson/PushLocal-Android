@@ -31,6 +31,8 @@ public class Server extends Service {
     public static final String NEW_DEVICE_ACTION_HOSTNAME = "HostName";
     public static final String NEW_DEVICE_ACTION_IP_ADDRESS = "IpAddress";
     public static final String NEW_DEVICE_ACTION_STATE = "State";
+    public static final String CONNECTED_DEVICE_ACTION = MainActivity.BROADCAST_PREFIX + "ConnectedDevice";
+    public static String CONNECTED_DEVICE_ACTION_IPADDRESS = "IpAddress";
     public static String UNIT = Character.toString((char) 31);
     public static String RECORD = Character.toString((char) 30);
     public static String GROUP = Character.toString((char) 29);
@@ -68,7 +70,7 @@ public class Server extends Service {
             udpThread = new Thread(udpListener);
             udpThread.start();
 
-            tcpHandler = new TcpHandler(serverSock);
+            tcpHandler = new TcpHandler(serverSock, this);
             tcpThread = new Thread(tcpHandler);
             tcpThread.start();
         } catch (IOException e) {
@@ -210,6 +212,12 @@ public class Server extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFICATION_ID);
     }
+    public synchronized void onDeviceConnection(String hostAddress){
+        Intent intent = new Intent();
+        intent.putExtra(CONNECTED_DEVICE_ACTION_IPADDRESS, hostAddress);
+        intent.setAction(CONNECTED_DEVICE_ACTION);
+        sendBroadcast(intent);
+    }
 
     private class BroadcastReceiver extends android.content.BroadcastReceiver {
 
@@ -221,16 +229,13 @@ public class Server extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(MainActivity.BROADCAST_ACTION)){
+            if (intent.getAction().equals(MainActivity.BROADCAST_ACTION)) {
                 broadcast();
-            }
-            else if(intent.getAction().equals(SyncDialog.CONNECT_ACTION)){
+            } else if (intent.getAction().equals(SyncDialog.CONNECT_ACTION)) {
                 connectNotify(intent.getStringExtra(SyncDialog.CONNECT_ACTION_IP_ADDRESS));
-            }
-            else if(intent.getAction().equals(NotificationListener.NOTIFICATION_ACTION)){
+            } else if (intent.getAction().equals(NotificationListener.NOTIFICATION_ACTION)) {
                 sendNotification(intent.getStringExtra(NotificationListener.NOTIFICATION_ACTION_NOTIFICATION));
-            }
-            else if(intent.getAction().equals(MainActivity.REQUEST_DEVICES_ACTION)){
+            } else if (intent.getAction().equals(MainActivity.REQUEST_DEVICES_ACTION)) {
                 for (Device device : discoveredDevices) {
                     Log.e("PushLocal", device.hostName);
                     Intent requestIntent = new Intent();

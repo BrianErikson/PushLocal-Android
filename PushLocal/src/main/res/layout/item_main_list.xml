@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants">
 
     <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mainmenu_list_radioButton" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
-            android:clickable="false" android:buttonTint="@color/radialButton_offline_color"/>
+            android:clickable="false"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DeviceName"
             android:id="@+id/mainmenu_list_devicename" android:layout_alignParentTop="true" android:layout_toEndOf="@+id/mainmenu_list_radioButton"
-            android:layout_alignBottom="@+id/mainmenu_list_radioButton" android:paddingTop="5dp" android:textSize="20dp"
+            android:layout_alignBottom="@+id/mainmenu_list_radioButton" android:paddingTop="3dp" android:textSize="20dp"
             android:layout_marginLeft="15dp"/>
     <ImageView
             android:layout_width="25dp"
