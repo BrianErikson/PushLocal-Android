@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity {
 
         Intent notificationIntent = new Intent(this, NotificationListener.class);
         startService(notificationIntent);
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -81,8 +82,7 @@ public class MainActivity extends ActionBarActivity {
         filter.addAction(Server.NEW_DEVICE_ACTION);
         filter.addAction(Server.CONNECTED_DEVICE_ACTION);
         registerReceiver(broadcastReceiver, filter);
-        devices.clear();
-        listAdapter.notifyDataSetChanged();
+
         Intent intent = new Intent();
         intent.setAction(REQUEST_DEVICES_ACTION);
         sendBroadcast(intent);
