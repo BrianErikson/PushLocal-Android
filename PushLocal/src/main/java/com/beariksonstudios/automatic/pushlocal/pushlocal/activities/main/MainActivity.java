@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity {
         mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
 
-        ListView list = (ListView) findViewById(R.id.mainmenu_list);
+        final ListView list = (ListView) findViewById(R.id.mainmenu_list);
 
         PLDatabase db = new PLDatabase(this);
         devices = db.getSavedDevices();
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("PushLocal", "HAS BEEN CLICKED ON LIST ITEM!!");
-                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position));
+                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position), listAdapter);
                 syncDialog.show();
             }
         });
@@ -168,7 +168,15 @@ public class MainActivity extends ActionBarActivity {
             if (intent.getAction().equals(Server.NEW_DEVICE_ACTION)) {
                 Device device = new Device(intent.getStringExtra(Server.NEW_DEVICE_ACTION_HOSTNAME),
                         intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS),false ,intent.getBooleanExtra(Server.NEW_DEVICE_ACTION_STATE, false), true);
-                devices.add(device);
+                boolean exists = false;
+                for(Device d: devices){
+                    if(d.ipAddress.equals(device.ipAddress)) {
+                        exists = true;
+                        d.isDiscovered = true;
+                    }
+                }
+                if (!exists)
+                    devices.add(device);
 
                 listAdapter.notifyDataSetChanged();
             }
@@ -177,6 +185,7 @@ public class MainActivity extends ActionBarActivity {
                 for(Device d: devices){
                     if(d.ipAddress.equals(ipAddress)){
                         d.connected = true;
+                        d.isDiscovered = true;
                         listAdapter.notifyDataSetChanged();
                         Toast.makeText(context, d.hostName + " is now connected Yo hommie", Toast.LENGTH_SHORT).show();
                     }

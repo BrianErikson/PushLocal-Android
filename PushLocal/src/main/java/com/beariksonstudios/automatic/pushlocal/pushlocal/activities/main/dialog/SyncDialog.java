@@ -11,7 +11,10 @@ import android.widget.ListView;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.PLDatabase;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
+import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainListAdapter;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Device;
+
+import java.util.List;
 
 /**
  * Created by BrianErikson on 8/18/2015.
@@ -22,11 +25,13 @@ public class SyncDialog extends Dialog {
 
     private final Device selectedDevice;
     private Context context;
+    private MainListAdapter listAdapter;
 
 
-    public SyncDialog(Context context, Device device) {
+    public SyncDialog(Context context, Device device, MainListAdapter listAdapter) {
         super(context);
         this.context = context;
+        this.listAdapter = listAdapter;
         selectedDevice = device;
     }
 
@@ -59,6 +64,10 @@ public class SyncDialog extends Dialog {
         });
 
         super.show();
+    }
+
+    public MainListAdapter getListAdapter() {
+        return listAdapter;
     }
 
     public Device getSelectedDevice() {
