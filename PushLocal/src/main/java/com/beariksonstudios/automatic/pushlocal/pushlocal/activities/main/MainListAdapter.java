@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,12 +45,12 @@ public class MainListAdapter extends ArrayAdapter<Device> {
             view = convertView;
 
         Device device = devices.get(position);
-        RadioButton radioButton = (RadioButton) view.findViewById(R.id.mainmenu_list_radioButton);
+        ImageView statusIndicator = (ImageView) view.findViewById(R.id.mainmenu_list_statusIndicator);
         if(device.connected){
-            radioButton.setChecked(true);
+            statusIndicator.setBackgroundResource(R.drawable.online_indicator);
         }
         else{
-            radioButton.setChecked(false);
+            statusIndicator.setBackgroundResource(R.drawable.offline_indicator);
         }
 
         TextView textView = (TextView) view.findViewById(R.id.mainmenu_list_devicename);

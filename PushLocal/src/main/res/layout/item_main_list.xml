@@ -4,18 +4,19 @@
             android:layout_height="match_parent"
             android:descendantFocusability="blocksDescendants">
 
-    <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_list_radioButton" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
-            android:clickable="false"/>
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/offline_indicator"
+        android:id="@+id/mainmenu_list_statusIndicator"
+        android:layout_margin="3dp"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DeviceName"
-            android:id="@+id/mainmenu_list_devicename" android:layout_alignParentTop="true" android:layout_toEndOf="@+id/mainmenu_list_radioButton"
-            android:layout_alignBottom="@+id/mainmenu_list_radioButton" android:paddingTop="3dp" android:textSize="20dp"
-            android:layout_marginLeft="15dp"/>
+            android:id="@+id/mainmenu_list_devicename" android:layout_alignParentTop="true" android:layout_toEndOf="@+id/mainmenu_list_statusIndicator"
+            android:paddingTop="3dp" android:textSize="20sp"
+            android:layout_marginStart="15dp"/>
     <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"

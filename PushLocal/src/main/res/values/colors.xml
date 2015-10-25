@@ -4,6 +4,6 @@
     <color name="background_button_color">#ff002f36</color>
     <color name="button_text_color">#ffd3ecf0</color>
     <color name="foreground_layout_color">#1cc4e7</color>
-    <color name="radialButton_offline_color">#ff5c121a</color>
-    <color name="radialButton_online_color">#ff09741d</color>
+    <color name="statusIndicator_offline_color">#ff7f1624</color>
+    <color name="statusIndicator_online_color">#ff09741d</color>
 </resources>
