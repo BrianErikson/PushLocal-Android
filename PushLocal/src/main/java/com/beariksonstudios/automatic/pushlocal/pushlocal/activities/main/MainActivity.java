@@ -1,6 +1,8 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.*;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -28,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String BROADCAST_ACTION = MainActivity.BROADCAST_PREFIX + "Broadcast";
     public static final String REQUEST_DEVICES_ACTION = MainActivity.BROADCAST_PREFIX + "Request Devices";
     public static final String BROADCAST_PREFIX = "PushLocal.";
+    public static final String SYNCDIALOG_TAG = "SyncDialog";
     private static Context mContext;
     public ArrayList<Device> devices = new ArrayList<>();
     private BroadcastReceiver broadcastReceiver;
@@ -43,6 +46,12 @@ public class MainActivity extends ActionBarActivity {
         final MainActivity _this = this;
         mContext = getApplicationContext();
         setContentView(R.layout.activity_main);
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Log.d("Pushlocal", getFragmentManager().getBackStackEntryCount() + " <- backstack");
+            }
+        });
 
         final ListView list = (ListView) findViewById(R.id.mainmenu_list);
 
@@ -54,8 +63,13 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("PushLocal", "HAS BEEN CLICKED ON LIST ITEM!!");
-                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position), listAdapter);
-                syncDialog.show();
+                SyncDialog syncDialog = SyncDialog.newInstance();
+                syncDialog.initialize(devices.get(position), listAdapter);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.add(syncDialog, SYNCDIALOG_TAG);
+                transaction.addToBackStack(SYNCDIALOG_TAG);
+                transaction.commit();
+
             }
         });
         Button discover = (Button) findViewById(R.id.mainmenu_discoverbuttton);
@@ -99,6 +113,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("Pushlocal", "PAUSED");
         unregisterReceiver(broadcastReceiver);
     }
 
@@ -162,6 +177,7 @@ public class MainActivity extends ActionBarActivity {
         }
         return false;
     }
+
     private class BroadcastReceiver extends android.content.BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
