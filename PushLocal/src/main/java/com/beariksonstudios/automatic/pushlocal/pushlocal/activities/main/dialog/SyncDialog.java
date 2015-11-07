@@ -22,6 +22,8 @@ import java.util.List;
 public class SyncDialog extends Dialog {
     public static final String CONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Connect";
     public static final String CONNECT_ACTION_IP_ADDRESS = "IpAddress";
+    public static final String DISCONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Disconnect";
+    public static final String DISCONNECT_ACTION_IP_ADDRESS = "Disconnect IpAddress" ;
 
     private final Device selectedDevice;
     private Context context;
@@ -50,16 +52,34 @@ public class SyncDialog extends Dialog {
         Button button = (Button) view.findViewById(R.id.button_network_dialog);
 
         final SyncDialog _this = this;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
-                intent.setAction(CONNECT_ACTION);
-                _this.context.sendBroadcast(intent);
-                _this.dismiss();
-            }
-        });
+        if(selectedDevice.connected){
+            button.setText("Disconnect");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra(DISCONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
+                    intent.setAction(DISCONNECT_ACTION);
+                    _this.context.sendBroadcast(intent);
+                    _this.dismiss();
+
+                }
+            });
+        }
+        else{
+            button.setText("Sync");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
+                    intent.setAction(CONNECT_ACTION);
+                    _this.context.sendBroadcast(intent);
+                    _this.dismiss();
+                }
+            });
+        }
+
 
         super.show();
     }

@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity;
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.NotificationListener;
@@ -32,6 +33,8 @@ public class Server extends Service {
     public static final String NEW_DEVICE_ACTION_IP_ADDRESS = "IpAddress";
     public static final String NEW_DEVICE_ACTION_STATE = "State";
     public static final String CONNECTED_DEVICE_ACTION = MainActivity.BROADCAST_PREFIX + "ConnectedDevice";
+    public static final String CONFIRMED_DISCONNECT_ACTION_IPADDRESS = "Confirmed Disconnect";
+    public static final String CONFIRMED_DISCONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Confirmed Disconnect";
     public static String CONNECTED_DEVICE_ACTION_IPADDRESS = "IpAddress";
     public static String UNIT = Character.toString((char) 31);
     public static String RECORD = Character.toString((char) 30);
@@ -106,6 +109,7 @@ public class Server extends Service {
         iFilter.addAction(SyncDialog.CONNECT_ACTION);
         iFilter.addAction(NotificationListener.NOTIFICATION_ACTION);
         iFilter.addAction(MainActivity.REQUEST_DEVICES_ACTION);
+        iFilter.addAction(SyncDialog.DISCONNECT_ACTION);
         broadcastReceiver = new BroadcastReceiver(this);
         registerReceiver(broadcastReceiver, iFilter);
     }
@@ -242,6 +246,16 @@ public class Server extends Service {
                     requestIntent.putExtra(NEW_DEVICE_ACTION_HOSTNAME, device.hostName);
                     requestIntent.putExtra(NEW_DEVICE_ACTION_IP_ADDRESS, device.ipAddress);
                     requestIntent.setAction(NEW_DEVICE_ACTION);
+                    server.sendBroadcast(requestIntent);
+                }
+            }
+            else if(intent.getAction().equals(SyncDialog.DISCONNECT_ACTION)){
+                String disIP = intent.getStringExtra(SyncDialog.DISCONNECT_ACTION_IP_ADDRESS);
+                boolean success = tcpHandler.removeClient(disIP);
+                if(success){
+                    Intent requestIntent = new Intent();
+                    requestIntent.putExtra(CONFIRMED_DISCONNECT_ACTION_IPADDRESS, disIP);
+                    requestIntent.setAction(CONFIRMED_DISCONNECT_ACTION);
                     server.sendBroadcast(requestIntent);
                 }
             }

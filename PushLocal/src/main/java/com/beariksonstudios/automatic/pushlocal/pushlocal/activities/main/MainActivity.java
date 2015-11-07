@@ -87,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Server.NEW_DEVICE_ACTION);
         filter.addAction(Server.CONNECTED_DEVICE_ACTION);
+        filter.addAction(Server.CONFIRMED_DISCONNECT_ACTION);
         registerReceiver(broadcastReceiver, filter);
 
         Intent intent = new Intent();
@@ -201,6 +202,16 @@ public class MainActivity extends ActionBarActivity {
                         d.isDiscovered = true;
                         listAdapter.notifyDataSetChanged();
                         Toast.makeText(context, d.hostName + " is now connected Yo hommie", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            else if(intent.getAction().equals(Server.CONFIRMED_DISCONNECT_ACTION)){
+                String ipAddress = intent.getStringExtra(Server.CONFIRMED_DISCONNECT_ACTION_IPADDRESS);
+                for(Device d: devices){
+                    if(d.ipAddress.equals(ipAddress)){
+                        d.connected = false;
+                        listAdapter.notifyDataSetChanged();
+                        Toast.makeText(context, d.hostName + " is now disconnected Yo hommie", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

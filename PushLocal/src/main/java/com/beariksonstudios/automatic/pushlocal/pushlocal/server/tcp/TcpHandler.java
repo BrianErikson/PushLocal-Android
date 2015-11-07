@@ -54,6 +54,26 @@ public class TcpHandler implements Runnable {
     }
 
     // Server/Main thread
+    public synchronized boolean removeClient(String ipAddress){
+        TcpClient toRemove = null;
+        for (TcpClient client : clients) {
+            if(client.getInetAddress().getHostName().equals(ipAddress)){
+                toRemove = client;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            try {
+                toRemove.dispose();
+            } catch (IOException e) {
+            }
+            clients.remove(toRemove);
+            return true;
+        }
+        return false;
+    }
+
+    // Server/Main thread
     public synchronized void broadcastMessageToClients(String message) {
         for (TcpClient client : clients) {
             try {

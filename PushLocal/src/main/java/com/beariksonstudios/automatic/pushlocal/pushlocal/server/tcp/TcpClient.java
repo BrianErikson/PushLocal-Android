@@ -40,7 +40,7 @@ public class TcpClient extends Thread {
                 handleMessage(str);
                 Thread.sleep(0);
             } catch (IOException | InterruptedException e) {
-                Log.e("PushLocal", " " + socket.getInetAddress().toString() + e.getMessage());
+                Log.e("PushLocal", " " + e.getMessage());
             }
         }
 
