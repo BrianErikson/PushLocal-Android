@@ -9,6 +9,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,8 @@ public class MainListAdapter extends ArrayAdapter<Device> {
             view = convertView;
 
         Device device = devices.get(position);
+
+        // update connected icon
         ImageView statusIndicator = (ImageView) view.findViewById(R.id.mainmenu_list_statusIndicator);
         if(device.connected){
             statusIndicator.setBackgroundResource(R.drawable.online_indicator);
@@ -50,6 +53,7 @@ public class MainListAdapter extends ArrayAdapter<Device> {
             statusIndicator.setBackgroundResource(R.drawable.offline_indicator);
         }
 
+        // update online text color
         TextView textView = (TextView) view.findViewById(R.id.mainmenu_list_devicename);
         if(!device.isDiscovered){
             textView.setTextColor(Color.GRAY);
@@ -58,10 +62,12 @@ public class MainListAdapter extends ArrayAdapter<Device> {
         }
         textView.setText(device.hostName);
 
+        // update saved image
         ImageView imageView = (ImageView) view.findViewById(R.id.mainmenu_list_devicestateindicator);
-        if(!device.isSaved){
+        if(device.isSaved)
+            imageView.setImageResource(R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
+        else
             imageView.setImageDrawable(null);
-        }
 
         return view;
     }

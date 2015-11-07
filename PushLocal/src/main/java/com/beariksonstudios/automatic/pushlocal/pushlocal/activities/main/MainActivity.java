@@ -54,7 +54,13 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("PushLocal", "HAS BEEN CLICKED ON LIST ITEM!!");
-                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position), listAdapter);
+                SyncDialog syncDialog = new SyncDialog(_this, devices.get(position));
+                syncDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        listAdapter.notifyDataSetChanged();
+                    }
+                });
                 syncDialog.show();
             }
         });

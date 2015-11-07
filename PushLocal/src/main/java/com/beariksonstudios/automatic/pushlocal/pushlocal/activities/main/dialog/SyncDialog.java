@@ -25,13 +25,11 @@ public class SyncDialog extends Dialog {
 
     private final Device selectedDevice;
     private Context context;
-    private MainListAdapter listAdapter;
 
 
-    public SyncDialog(Context context, Device device, MainListAdapter listAdapter) {
+    public SyncDialog(Context context, Device device) {
         super(context);
         this.context = context;
-        this.listAdapter = listAdapter;
         selectedDevice = device;
     }
 
@@ -47,7 +45,7 @@ public class SyncDialog extends Dialog {
         super.setContentView(view);
 
         ListView list = (ListView) view.findViewById(R.id.listView_network_dialog);
-        list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog, this));
+        list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog, selectedDevice));
 
         Button button = (Button) view.findViewById(R.id.button_network_dialog);
 
@@ -64,10 +62,6 @@ public class SyncDialog extends Dialog {
         });
 
         super.show();
-    }
-
-    public MainListAdapter getListAdapter() {
-        return listAdapter;
     }
 
     public Device getSelectedDevice() {
