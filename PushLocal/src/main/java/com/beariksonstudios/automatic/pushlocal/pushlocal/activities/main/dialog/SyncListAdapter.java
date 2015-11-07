@@ -30,16 +30,24 @@ public class SyncListAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        view = inflater.inflate(R.layout.item_dialog_sync_list, parent, false);
+    public View getView(int position, View convertView, ViewGroup parent) {View view;
+        if (convertView == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            view = inflater.inflate(R.layout.item_dialog_sync_list, parent, false);
+        }
+        else
+            view = convertView;
 
         TextView textView = (TextView) view.findViewById(R.id.textView_item_dialog_list);
         textView.setText(choices[position]);
+
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox_item_dialog_list);
+        // reset checkbox to prevent recyclable-view glitches
+        checkBox.setChecked(false);
+        checkBox.setOnClickListener(null);
+
         if(choices[position].equals(choices[2])){
             Log.d("Pushlocal", position + "   " + choices[position] + "   " + choices[2]);
-            final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox_item_dialog_list);
             if(syncDialog.getSelectedDevice().isSaved) {
                 checkBox.setChecked(true);
             }
@@ -75,6 +83,4 @@ public class SyncListAdapter extends ArrayAdapter<String> {
 
         return view;
     }
-
-
 }
