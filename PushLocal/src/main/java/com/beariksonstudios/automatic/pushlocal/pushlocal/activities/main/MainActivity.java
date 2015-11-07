@@ -176,9 +176,16 @@ public class MainActivity extends ActionBarActivity {
                         intent.getStringExtra(Server.NEW_DEVICE_ACTION_IP_ADDRESS),false ,intent.getBooleanExtra(Server.NEW_DEVICE_ACTION_STATE, false), true);
                 boolean exists = false;
                 for(Device d: devices){
-                    if(d.ipAddress.equals(device.ipAddress)) {
+                    if(d.hostName.equals(device.hostName)) {
                         exists = true;
                         d.isDiscovered = true;
+                        if(!d.ipAddress.equals(device.ipAddress)){
+                            d.ipAddress = device.ipAddress;
+                            if (d.isSaved) {
+                                PLDatabase pd = new PLDatabase(context);
+                                pd.updateDevice(device);
+                            }
+                        }
                     }
                 }
                 if (!exists)
