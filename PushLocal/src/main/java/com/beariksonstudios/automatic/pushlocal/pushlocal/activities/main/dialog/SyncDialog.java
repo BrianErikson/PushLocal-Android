@@ -1,14 +1,10 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
@@ -23,35 +19,33 @@ import java.util.List;
 /**
  * Created by BrianErikson on 8/18/2015.
  */
-public class SyncDialog extends DialogFragment {
+public class SyncDialog extends Dialog {
     public static final String CONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Connect";
     public static final String CONNECT_ACTION_IP_ADDRESS = "IpAddress";
 
-    private Device selectedDevice;
-    private MainListAdapter listAdapter;
+    private final Device selectedDevice;
+    private Context context;
 
-    public static SyncDialog newInstance(){
-        return new SyncDialog();
-    }
 
-    public void initialize(Device selectedDevice, MainListAdapter listAdapter) {
-        this.selectedDevice = selectedDevice;
-        this.listAdapter = listAdapter;
+    public SyncDialog(Context context, Device device) {
+        super(context);
+        this.context = context;
+        selectedDevice = device;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void show() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_main_sync, null);
+
+        setCanceledOnTouchOutside(true);
         setCancelable(true);
+
+        super.setContentView(view);
+
         ListView list = (ListView) view.findViewById(R.id.listView_network_dialog);
-        list.setAdapter(new SyncListAdapter(getActivity(), R.id.listView_network_dialog, this));
+        list.setAdapter(new SyncListAdapter(context, R.id.listView_network_dialog, selectedDevice));
 
         Button button = (Button) view.findViewById(R.id.button_network_dialog);
 
@@ -62,16 +56,12 @@ public class SyncDialog extends DialogFragment {
                 Intent intent = new Intent();
                 intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
                 intent.setAction(CONNECT_ACTION);
-                _this.getActivity().sendBroadcast(intent);
+                _this.context.sendBroadcast(intent);
                 _this.dismiss();
             }
         });
 
-        return view;
-    }
-
-    public MainListAdapter getListAdapter() {
-        return listAdapter;
+        super.show();
     }
 
     public Device getSelectedDevice() {
