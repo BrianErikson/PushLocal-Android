@@ -1,7 +1,9 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
+import android.accessibilityservice.*;
 import android.app.AlertDialog;
 import android.content.*;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
@@ -75,8 +77,14 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        Intent notificationIntent = new Intent(this, NotificationListener.class);
-        startService(notificationIntent);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            Intent notificationIntent = new Intent(this, NotificationListener.class);
+            startService(notificationIntent);
+        }
+        else{
+            Intent accessibilityIntent = new Intent(this, AccessibilityService.class);
+            startService(accessibilityIntent);
+        }
         listAdapter.notifyDataSetChanged();
     }
 
@@ -98,9 +106,15 @@ public class MainActivity extends ActionBarActivity {
             Log.d("PushLocal", "Started or confirmed that Server service is running");
         else
             Toast.makeText(this, "ERROR: Could not start server", Toast.LENGTH_LONG).show();
-
-        if (!isServiceEnabled())
-            showEnableDialog();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (!isServiceEnabled())
+                showEnableDialog();
+        }
+        else{
+            if(!isAccessibilitySettingsOn(this)){
+                showAccessibilityEnabledDialog();
+            }
+        }
     }
 
     @Override
@@ -151,7 +165,26 @@ public class MainActivity extends ActionBarActivity {
                         })
                 .create().show();
     }
-
+    private void showAccessibilityEnabledDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage("Please enable accessibility service access")
+                .setTitle("Accessibility Access")
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setCancelable(true)
+                .setPositiveButton(android.R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                            }
+                        })
+                .setNegativeButton(android.R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // do nothing
+                            }
+                        })
+                .create().show();
+    }
     private boolean isServiceEnabled() {
         String pkgName = getPackageName();
         final String flat = Settings.Secure.getString(getContentResolver(),
@@ -162,6 +195,36 @@ public class MainActivity extends ActionBarActivity {
                 final ComponentName cn = ComponentName.unflattenFromString(names[i]);
                 if (cn != null) {
                     if (TextUtils.equals(pkgName, cn.getPackageName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public static boolean isAccessibilitySettingsOn(Context mContext) {
+        int accessibilityEnabled = 0;
+        final String service = "com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.AccessibilityService";
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                    mContext.getApplicationContext().getContentResolver(),
+                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+
+        }
+        catch (Settings.SettingNotFoundException e) {
+
+        }
+        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+        if (accessibilityEnabled == 1) {
+            String settingValue = Settings.Secure.getString(
+                    mContext.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (settingValue != null) {
+                mStringColonSplitter.setString(settingValue);
+                while (mStringColonSplitter.hasNext()) {
+                    String accessabilityService = mStringColonSplitter.next();
+                    if (accessabilityService.equalsIgnoreCase(service)) {
                         return true;
                     }
                 }

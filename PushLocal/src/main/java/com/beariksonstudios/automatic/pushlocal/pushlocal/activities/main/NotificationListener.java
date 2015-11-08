@@ -1,7 +1,9 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -10,6 +12,7 @@ import com.beariksonstudios.automatic.pushlocal.pushlocal.server.Server;
 /**
  * Created by nphel on 8/21/2015.
  */
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class NotificationListener extends NotificationListenerService {
     public static final String NOTIFICATION_ACTION = MainActivity.BROADCAST_PREFIX + "Notification";
     public static final String NOTIFICATION_ACTION_NOTIFICATION = "Notification";
@@ -27,5 +30,10 @@ public class NotificationListener extends NotificationListenerService {
         intent.putExtra(NOTIFICATION_ACTION_NOTIFICATION, notification);
         intent.setAction(NOTIFICATION_ACTION);
         sendBroadcast(intent);
+    }
+
+    @Override
+    public void onNotificationRemoved(StatusBarNotification sbn) {
+        super.onNotificationRemoved(sbn);
     }
 }

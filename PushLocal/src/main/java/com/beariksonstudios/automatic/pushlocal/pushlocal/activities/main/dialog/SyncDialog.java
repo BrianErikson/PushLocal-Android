@@ -3,6 +3,7 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialo
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -73,6 +74,7 @@ public class SyncDialog extends Dialog {
                 public void onClick(View v) {
                     Intent intent = new Intent();
                     intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress);
+                    Log.d("Pushlocal", "Stored IP Address: " + selectedDevice.ipAddress);
                     intent.setAction(CONNECT_ACTION);
                     _this.context.sendBroadcast(intent);
                     _this.dismiss();

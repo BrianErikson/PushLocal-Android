@@ -173,6 +173,7 @@ public class Server extends Service {
             protected Void doInBackground(Void... params) {
                 try {
                     byte[] data = "connect".getBytes();
+                    Log.d("PushLocal", "Sending connection notification to " + address);
                     DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(address), 7766);
                     udpSocket.send(packet);
                 } catch (IOException e) {
