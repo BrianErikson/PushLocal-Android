@@ -35,7 +35,7 @@ class UdpListener(private val udpSocket: DatagramSocket, private val server: Ser
         if (msg.contains("hostName")) {
             val split = msg.split(Server.UNIT.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             Log.d("PushLocal", "UDP Listener Handle Message IP: " + fromAddress.hostName)
-            server.addDiscoveredDevice(Device(split[1], fromAddress.hostName, false, false, true))
+            server.addDiscoveredDevice(Device(split[1], fromAddress.hostAddress, false, false, true))
         }
     }
 

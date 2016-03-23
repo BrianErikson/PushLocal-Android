@@ -1,8 +1,8 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.dialog
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -19,7 +19,7 @@ class SyncListAdapter(private val con: Context, resource: Int, private val selec
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View
         if (convertView == null) {
-            val inflater = (context as Activity).layoutInflater
+            val inflater = LayoutInflater.from(context)
             view = inflater.inflate(R.layout.item_dialog_sync_list, parent, false)
         } else
             view = convertView

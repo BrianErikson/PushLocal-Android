@@ -4,13 +4,11 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.DhcpInfo
 import android.net.wifi.WifiManager
 import android.os.AsyncTask
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.util.Log
-import android.widget.Toast
 import com.beariksonstudios.automatic.pushlocal.pushlocal.R
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity
 import com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.NotificationListener
@@ -168,7 +166,7 @@ class Server : Service() {
         return null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (broadcastReceiver == null) {
             startReceiver()
         }

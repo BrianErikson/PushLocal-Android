@@ -26,7 +26,6 @@ class TcpHandler(private val serverSock: ServerSocket, private val server: Serve
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-
         }
     }
 

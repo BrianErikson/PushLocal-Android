@@ -1,6 +1,5 @@
 package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main
 
-import android.accessibilityservice.*
 import android.app.AlertDialog
 import android.content.*
 import android.os.Build
@@ -11,7 +10,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ListView
@@ -44,7 +42,6 @@ class MainActivity : ActionBarActivity() {
         listAdapter = MainListAdapter(this, R.layout.item_main_list, devices)
         list.adapter = listAdapter
         list.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            Log.d("PushLocal", "HAS BEEN CLICKED ON LIST ITEM!!")
             val syncDialog = SyncDialog(_this, devices[position])
             syncDialog.setOnDismissListener { listAdapter!!.notifyDataSetChanged() }
             syncDialog.show()
@@ -176,12 +173,13 @@ class MainActivity : ActionBarActivity() {
                 listAdapter!!.notifyDataSetChanged()
             } else if (intent.action == Server.CONNECTED_DEVICE_ACTION) {
                 val ipAddress = intent.getStringExtra(Server.CONNECTED_DEVICE_ACTION_IPADDRESS)
+                Log.d("PushLocal", "CONNECTED_DEVICE_ACTION for ip $ipAddress. Now iterating through devices")
                 for (d in devices) {
                     if (d.ipAddress == ipAddress) {
                         d.connected = true
                         d.isDiscovered = true
                         listAdapter!!.notifyDataSetChanged()
-                        Toast.makeText(context, d.hostName + " is now connected Yo hommie", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${d.hostName} is now connected", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else if (intent.action == Server.CONFIRMED_DISCONNECT_ACTION) {
@@ -190,7 +188,7 @@ class MainActivity : ActionBarActivity() {
                     if (d.ipAddress == ipAddress) {
                         d.connected = false
                         listAdapter!!.notifyDataSetChanged()
-                        Toast.makeText(context, d.hostName + " is now disconnected Yo hommie", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${d.hostName} is now disconnected", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
