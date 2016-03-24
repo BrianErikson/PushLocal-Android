@@ -2,6 +2,8 @@ package com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main
 
 import android.app.AlertDialog
 import android.content.*
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -25,7 +27,27 @@ import java.util.Timer
 
 
 class MainActivity : ActionBarActivity() {
-    var devices = ArrayList<Device>()
+    var connectedToWifi: Boolean = false
+    private set(value) {
+        if (value != field && value) {
+            Log.d("PushLocal", "Connected to WiFi")
+            autoConnect()
+        }
+        else {
+            Log.d("PushLocal", "Disconnected from WiFi")
+        }
+        field = value
+    }
+
+    var devices: ArrayList<Device> = ArrayList()
+    private val savedDevices: ArrayList<Device> = ArrayList()
+    get() {
+        if (field.size < 1) {
+            val db: PLDatabase = PLDatabase(this)
+            field.addAll(db.savedDevices)
+        }
+        return field
+    }
     private var broadcastReceiver: BroadcastReceiver? = null
     private var listAdapter: MainListAdapter? = null
 
@@ -37,8 +59,7 @@ class MainActivity : ActionBarActivity() {
 
         val list = findViewById(R.id.mainmenu_list) as ListView
 
-        val db = PLDatabase(this)
-        devices = db.savedDevices
+        devices.addAll(savedDevices)
         listAdapter = MainListAdapter(this, R.layout.item_main_list, devices)
         list.adapter = listAdapter
         list.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
@@ -72,7 +93,9 @@ class MainActivity : ActionBarActivity() {
         filter.addAction(Server.NEW_DEVICE_ACTION)
         filter.addAction(Server.CONNECTED_DEVICE_ACTION)
         filter.addAction(Server.CONFIRMED_DISCONNECT_ACTION)
+
         registerReceiver(broadcastReceiver, filter)
+        registerReceiver(WifiReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         val intent = Intent()
         intent.action = REQUEST_DEVICES_ACTION
@@ -117,6 +140,12 @@ class MainActivity : ActionBarActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun autoConnect() {
+        for (device in savedDevices) {
+            SyncDialog.syncToDevice(this, device)
+        }
+    }
+
     private fun showEnableDialog() {
         AlertDialog.Builder(this).setMessage("Please enable NotificationMonitor access").setTitle("Notification Access").setIconAttribute(android.R.attr.alertDialogIcon).setCancelable(true).setPositiveButton(android.R.string.ok
         ) { dialog, id -> startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")) }.setNegativeButton(android.R.string.cancel
@@ -130,23 +159,23 @@ class MainActivity : ActionBarActivity() {
     }
 
     private val isServiceEnabled: Boolean
-        get() {
-            val pkgName = packageName
-            val flat = Settings.Secure.getString(contentResolver,
-                    "enabled_notification_listeners")
-            if (!TextUtils.isEmpty(flat)) {
-                val names = flat.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                for (i in names.indices) {
-                    val cn = ComponentName.unflattenFromString(names[i])
-                    if (cn != null) {
-                        if (TextUtils.equals(pkgName, cn.packageName)) {
-                            return true
-                        }
+    get() {
+        val pkgName = packageName
+        val flat = Settings.Secure.getString(contentResolver,
+                "enabled_notification_listeners")
+        if (!TextUtils.isEmpty(flat)) {
+            val names = flat.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            for (i in names.indices) {
+                val cn = ComponentName.unflattenFromString(names[i])
+                if (cn != null) {
+                    if (TextUtils.equals(pkgName, cn.packageName)) {
+                        return true
                     }
                 }
             }
-            return false
         }
+        return false
+    }
 
     private inner class BroadcastReceiver : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -191,6 +220,21 @@ class MainActivity : ActionBarActivity() {
                         Toast.makeText(context, "${d.hostName} is now disconnected", Toast.LENGTH_SHORT).show()
                     }
                 }
+            }
+        }
+    }
+
+    private inner class WifiReceiver : android.content.BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val conMan : ConnectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE)
+                    as ConnectivityManager? ?: throw RuntimeException("Could not access Connectivity Manager")
+
+            val netInfo : NetworkInfo? = conMan.activeNetworkInfo
+            if (netInfo?.type == ConnectivityManager.TYPE_WIFI) {
+                connectedToWifi = true
+            }
+            else {
+                connectedToWifi = false
             }
         }
     }

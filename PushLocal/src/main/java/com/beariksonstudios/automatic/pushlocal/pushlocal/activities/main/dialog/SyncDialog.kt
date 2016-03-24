@@ -45,11 +45,7 @@ class SyncDialog(val con: Context, val selectedDevice: Device) : Dialog(con) {
         } else {
             button.text = "Sync"
             button.setOnClickListener {
-                val intent = Intent()
-                intent.putExtra(CONNECT_ACTION_IP_ADDRESS, selectedDevice.ipAddress)
-                Log.d("Pushlocal", "Stored IP Address: " + selectedDevice.ipAddress)
-                intent.action = CONNECT_ACTION
-                _this.context.sendBroadcast(intent)
+                syncToDevice(context, selectedDevice)
                 _this.dismiss()
             }
         }
@@ -63,5 +59,12 @@ class SyncDialog(val con: Context, val selectedDevice: Device) : Dialog(con) {
         val CONNECT_ACTION_IP_ADDRESS = "IpAddress"
         val DISCONNECT_ACTION = MainActivity.BROADCAST_PREFIX + "Disconnect"
         val DISCONNECT_ACTION_IP_ADDRESS = "Disconnect IpAddress"
+
+        fun syncToDevice(context: Context, device: Device) {
+            val intent = Intent()
+            intent.putExtra(CONNECT_ACTION_IP_ADDRESS, device.ipAddress)
+            intent.action = CONNECT_ACTION
+            context.sendBroadcast(intent)
+        }
     }
 }

@@ -42,15 +42,6 @@
             android:name=".server.Server"
             android:label="PushLocal Server"
              />
-
-        <activity
-            android:name=".activities.saveddevices.SavedDevicesActivity"
-            android:label="@string/title_activity_saved_devices"
-            android:parentActivityName=".activities.main.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.beariksonstudios.automatic.pushlocal.pushlocal.activities.main.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
